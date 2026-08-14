@@ -1,25 +1,23 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="url(#gradient)"/>
-  <!-- Central node -->
+  <rect width="32" height="32" rx="7" fill="url(#myrouter-grad)"/>
+  <!-- Central router node -->
   <circle cx="16" cy="16" r="3" fill="white"/>
-  <!-- Outer nodes -->
-  <circle cx="8" cy="8" r="2" fill="white"/>
-  <circle cx="24" cy="8" r="2" fill="white"/>
-  <circle cx="8" cy="24" r="2" fill="white"/>
-  <circle cx="24" cy="24" r="2" fill="white"/>
-  <circle cx="16" cy="5" r="1.5" fill="white"/>
-  <circle cx="16" cy="27" r="1.5" fill="white"/>
-  <!-- Connection lines -->
-  <line x1="16" y1="13" x2="8" y2="8" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="16" y1="13" x2="24" y2="8" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="16" y1="19" x2="8" y2="24" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="16" y1="19" x2="24" y2="24" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="16" y1="13" x2="16" y2="5" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="16" y1="19" x2="16" y2="27" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- M Router Nodes -->
+  <circle cx="7" cy="9" r="2" fill="white"/>
+  <circle cx="25" cy="9" r="2" fill="white"/>
+  <circle cx="7" cy="23" r="2" fill="white"/>
+  <circle cx="25" cy="23" r="2" fill="white"/>
+  <circle cx="16" cy="6" r="1.5" fill="white" opacity="0.9"/>
+  <!-- Primary Router Pathways forming 'M' -->
+  <path d="M7 23V9L16 16L25 9V23" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Cross routing connections -->
+  <path d="M16 6V13" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M7 23L16 16L25 23" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.75"/>
   <defs>
-    <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#E54D5E"/>
-      <stop offset="1" stop-color="#C93D4E"/>
+    <linearGradient id="myrouter-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="50%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
     </linearGradient>
   </defs>
 </svg>

@@ -1,9 +1,10 @@
 {
-  "name": "omniroute",
+  "name": "myrouter",
   "version": "3.8.49",
-  "description": "Unified AI router with 160+ providers, RTK+Caveman compression, auto fallback, MCP/A2A, desktop, PWA, and OpenAI-compatible APIs.",
+  "description": "myrouter — Unified AI router with 160+ providers, RTK+Caveman compression, auto fallback, MCP/A2A, desktop, PWA, and OpenAI-compatible APIs.",
   "type": "module",
   "bin": {
+    "myrouter": "bin/omniroute.mjs",
     "omniroute": "bin/omniroute.mjs",
     "omniroute-reset-password": "bin/reset-password.mjs"
   },

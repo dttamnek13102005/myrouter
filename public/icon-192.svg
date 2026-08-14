@@ -1,25 +1,23 @@
 <svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="192" height="192" rx="36" fill="url(#gradient)" />
-    <!-- Central node -->
-    <circle cx="96" cy="96" r="18" fill="white" />
-    <!-- Outer nodes -->
-    <circle cx="48" cy="48" r="12" fill="white" />
-    <circle cx="144" cy="48" r="12" fill="white" />
-    <circle cx="48" cy="144" r="12" fill="white" />
-    <circle cx="144" cy="144" r="12" fill="white" />
-    <circle cx="96" cy="30" r="9" fill="white" />
-    <circle cx="96" cy="162" r="9" fill="white" />
-    <!-- Connection lines -->
-    <line x1="96" y1="78" x2="48" y2="48" stroke="white" stroke-width="7" stroke-linecap="round" />
-    <line x1="96" y1="78" x2="144" y2="48" stroke="white" stroke-width="7" stroke-linecap="round" />
-    <line x1="96" y1="114" x2="48" y2="144" stroke="white" stroke-width="7" stroke-linecap="round" />
-    <line x1="96" y1="114" x2="144" y2="144" stroke="white" stroke-width="7" stroke-linecap="round" />
-    <line x1="96" y1="78" x2="96" y2="30" stroke="white" stroke-width="7" stroke-linecap="round" />
-    <line x1="96" y1="114" x2="96" y2="162" stroke="white" stroke-width="7" stroke-linecap="round" />
-    <defs>
-        <linearGradient id="gradient" x1="0" y1="0" x2="192" y2="192" gradientUnits="userSpaceOnUse">
-            <stop stop-color="#E54D5E" />
-            <stop offset="1" stop-color="#C93D4E" />
-        </linearGradient>
-    </defs>
+  <rect width="192" height="192" rx="42" fill="url(#myrouter-grad-192)" />
+  <!-- Central router core -->
+  <circle cx="96" cy="96" r="18" fill="white" />
+  <!-- Outer nodes forming M architecture -->
+  <circle cx="42" cy="54" r="12" fill="white" />
+  <circle cx="150" cy="54" r="12" fill="white" />
+  <circle cx="42" cy="138" r="12" fill="white" />
+  <circle cx="150" cy="138" r="12" fill="white" />
+  <circle cx="96" cy="36" r="9" fill="white" opacity="0.9" />
+  <!-- Primary routing paths forming M -->
+  <path d="M42 138V54L96 96L150 54V138" stroke="white" stroke-width="9.6" stroke-linecap="round" stroke-linejoin="round" />
+  <!-- Secondary cross routing -->
+  <line x1="96" y1="36" x2="96" y2="78" stroke="white" stroke-width="7.2" stroke-linecap="round" />
+  <path d="M42 138L96 96L150 138" stroke="white" stroke-width="7.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.75" />
+  <defs>
+    <linearGradient id="myrouter-grad-192" x1="0" y1="0" x2="192" y2="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="50%" stop-color="#7C3AED" />
+      <stop offset="100%" stop-color="#06B6D4" />
+    </linearGradient>
+  </defs>
 </svg>
