@@ -9,12 +9,12 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { CORS_HEADERS, handleCorsOptions } from "@/shared/utils/cors";
-import { buildErrorBody } from "@omniroute/open-sse/utils/error.ts";
+import { buildErrorBody } from "@myrouter/open-sse/utils/error.ts";
 import { getApiKeyRequestScope } from "@/app/api/v1/_helpers/apiKeyScope";
 import {
   getAutoComboCandidates,
   isUnknownAutoChannelError,
-} from "@omniroute/open-sse/handlers/autoComboCandidates.ts";
+} from "@myrouter/open-sse/handlers/autoComboCandidates.ts";
 
 const channelParamSchema = z
   .string()

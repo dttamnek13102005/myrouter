@@ -1,5 +1,5 @@
-import { supportsXHighEffort } from "@omniroute/open-sse/config/providerModels";
-import { parseModel } from "@omniroute/open-sse/services/model";
+import { supportsXHighEffort } from "@myrouter/open-sse/config/providerModels";
+import { parseModel } from "@myrouter/open-sse/services/model";
 import { stripVscodeServiceTierVariantModelId } from "@/lib/vscode/serviceTierVariants";
 import { extendCodexGpt56EffortValues } from "@/shared/reasoning/effortStandardization";
 

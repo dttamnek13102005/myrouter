@@ -6,7 +6,7 @@ lastUpdated: 2026-06-28
 
 # Inspektor ruchu
 
-Traffic Inspector to wbudowany debugger ruchu HTTPS w OmniRoute — narzędzie w stylu Charles Proxy / mitmweb / HTTP Toolkit, które jest **świadome LLM** (**LLM-aware**) i **świadome agentów** (**agent-aware**). Znajduje się pod `/dashboard/tools/traffic-inspector` i odbiera ruch na żywo z maksymalnie 5 jednoczesnych źródeł przechwytywania.
+Traffic Inspector to wbudowany debugger ruchu HTTPS w MyRouter — narzędzie w stylu Charles Proxy / mitmweb / HTTP Toolkit, które jest **świadome LLM** (**LLM-aware**) i **świadome agentów** (**agent-aware**). Znajduje się pod `/dashboard/tools/traffic-inspector` i odbiera ruch na żywo z maksymalnie 5 jednoczesnych źródeł przechwytywania.
 
 **Lokalizacja w dashboardzie:** `/dashboard/tools/traffic-inspector`
 **Grupa w sidebarze:** Tools (po AgentBridge)
@@ -18,7 +18,7 @@ Traffic Inspector to wbudowany debugger ruchu HTTPS w OmniRoute — narzędzie w
 
 ### Co wyróżnia Traffic Inspector
 
-| Feature                                                                | mitmweb | Charles | Fiddler | **OmniRoute Traffic Inspector** |
+| Feature                                                                | mitmweb | Charles | Fiddler | **MyRouter Traffic Inspector** |
 | ---------------------------------------------------------------------- | :-----: | :-----: | :-----: | :-----------------------------: |
 | Interfejs webowy                                                       |    ✓    |    ✗    |    ✗    |                ✓                |
 | Open-source                                                            |    ✓    |    ✗    | partial |                ✓                |
@@ -26,7 +26,7 @@ Traffic Inspector to wbudowany debugger ruchu HTTPS w OmniRoute — narzędzie w
 | **LLM-aware** (parsuje kształt OpenAI/Anthropic/Gemini, tokeny, model) |    ✗    |    ✗    |    ✗    |                ✓                |
 | **Widoczne mapowanie modeli** (gemini-3-flash → claude-sonnet-4.7)     |    ✗    |    ✗    |    ✗    |                ✓                |
 | **Podział latencji proxy/upstream**                                    | partial |    ✗    |    ✗    |                ✓                |
-| **Zintegrowany z OmniRoute** routing, fallback, cost                   |    ✗    |    ✗    |    ✗    |                ✓                |
+| **Zintegrowany z MyRouter** routing, fallback, cost                   |    ✗    |    ✗    |    ✗    |                ✓                |
 | **Debug proxy systemowego** (dowolna aplikacja na maszynie)            |    ✓    |    ✓    |    ✓    |                ✓                |
 | **Przechwytywanie custom host** (per-host DNS redirect)                |    ✓    |    ✓    |    ✓    |                ✓                |
 | **Tryb HTTP_PROXY env**                                                |    ✓    |    ✓    |    ✓    |                ✓                |
@@ -256,8 +256,8 @@ interface LlmMetadata {
   tokensIn: number | null; // usage.prompt_tokens / usage.input_tokens
   tokensOut: number | null; // usage.completion_tokens / usage.output_tokens
   streamed: boolean; // true if SSE response
-  mappedTo: string | null; // x-omniroute-mapped header
-  costEstimateUsd: number | null; // estimated cost based on OmniRoute pricing
+  mappedTo: string | null; // x-myrouter-mapped header
+  costEstimateUsd: number | null; // estimated cost based on MyRouter pricing
 }
 ```
 
@@ -388,7 +388,7 @@ INSPECTOR_HTTP_PROXY_PORT=8888
 
 ### Proxy systemowe nie zostało cofnięte
 
-Jeśli OmniRoute crashnie przy aktywnym trybie proxy systemowego:
+Jeśli MyRouter crashnie przy aktywnym trybie proxy systemowego:
 
 **macOS:**
 
@@ -433,7 +433,7 @@ Base path: `/api/tools/traffic-inspector/`
 | GET    | `/requests`                 | Lista żądań (filtrowalna: `?profile=llm&host=&agent=&status=&source=&sessionId=`) |
 | GET    | `/requests/{id}`            | Szczegóły pojedynczego żądania                                                    |
 | DELETE | `/requests`                 | Czyści bufor w pamięci                                                            |
-| POST   | `/requests/{id}/replay`     | Ponownie wykonuje to samo żądanie przez router OmniRoute                          |
+| POST   | `/requests/{id}/replay`     | Ponownie wykonuje to samo żądanie przez router MyRouter                          |
 | PUT    | `/requests/{id}/annotation` | Zapisuje lub aktualizuje notatkę przy żądaniu                                     |
 
 ### WebSocket

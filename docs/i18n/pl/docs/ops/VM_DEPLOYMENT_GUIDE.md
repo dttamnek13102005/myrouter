@@ -1,14 +1,14 @@
 ---
-title: "OmniRoute — Przewodnik wdrożenia na VM z Cloudflare"
+title: "MyRouter — Przewodnik wdrożenia na VM z Cloudflare"
 version: 3.8.40
 lastUpdated: 2026-06-28
 ---
 
-# OmniRoute — Przewodnik wdrożenia na VM z Cloudflare
+# MyRouter — Przewodnik wdrożenia na VM z Cloudflare
 
 🌐 **Languages:** 🇺🇸 [English](./VM_DEPLOYMENT_GUIDE.md) | 🇧🇷 [Português (Brasil)](../i18n/pt-BR/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇪🇸 [Español](../i18n/es/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇫🇷 [Français](../i18n/fr/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇹 [Italiano](../i18n/it/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇷🇺 [Русский](../i18n/ru/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇨🇳 [中文 (简体)](../i18n/zh-CN/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇩🇪 [Deutsch](../i18n/de/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇳 [हिन्दी](../i18n/in/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇹🇭 [ไทย](../i18n/th/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇺🇦 [Українська](../i18n/uk-UA/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇸🇦 [العربية](../i18n/ar/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇯🇵 [日本語](../i18n/ja/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇻🇳 [Tiếng Việt](../i18n/vi/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇧🇬 [Български](../i18n/bg/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇩🇰 [Dansk](../i18n/da/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇫🇮 [Suomi](../i18n/fi/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇱 [עברית](../i18n/he/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇭🇺 [Magyar](../i18n/hu/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇩 [Bahasa Indonesia](../i18n/id/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇰🇷 [한국어](../i18n/ko/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇲🇾 [Bahasa Melayu](../i18n/ms/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇳🇱 [Nederlands](../i18n/nl/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇳🇴 [Norsk](../i18n/no/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇵🇹 [Português (Portugal)](../i18n/pt/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇷🇴 [Română](../i18n/ro/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇵🇱 [Polski](../i18n/pl/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇸🇰 [Slovenčina](../i18n/sk/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇸🇪 [Svenska](../i18n/sv/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇵🇭 [Filipino](../i18n/phi/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇨🇿 [Čeština](../i18n/cs/docs/ops/VM_DEPLOYMENT_GUIDE.md)
 
-Kompletny przewodnik instalacji i konfiguracji OmniRoute na VM (VPS) z domeną zarządzaną przez Cloudflare.
+Kompletny przewodnik instalacji i konfiguracji MyRouter na VM (VPS) z domeną zarządzaną przez Cloudflare.
 
 ---
 
@@ -86,18 +86,18 @@ ufw enable
 
 ---
 
-## 2. Instalacja OmniRoute
+## 2. Instalacja MyRouter
 
 ### 2.1 Utwórz katalog konfiguracji
 
 ```bash
-mkdir -p /opt/omniroute
+mkdir -p /opt/myrouter
 ```
 
 ### 2.2 Utwórz plik zmiennych środowiskowych
 
 ```bash
-cat > /opt/omniroute/.env << 'EOF'
+cat > /opt/myrouter/.env << 'EOF'
 # === Security ===
 JWT_SECRET=CHANGE-TO-A-UNIQUE-64-CHAR-SECRET-KEY
 INITIAL_PASSWORD=YourSecurePassword123!
@@ -105,7 +105,7 @@ API_KEY_SECRET=REPLACE-WITH-ANOTHER-SECRET-KEY
 STORAGE_ENCRYPTION_KEY=REPLACE-WITH-THIRD-SECRET-KEY
 STORAGE_ENCRYPTION_KEY_VERSION=v1
 MACHINE_ID_SALT=CHANGE-TO-A-UNIQUE-SALT
-OMNIROUTE_WS_BRIDGE_SECRET=REPLACE-WITH-WS-BRIDGE-SECRET  # REQUIRED em produção: usado pelo Codex Responses WS bridge
+MYROUTER_WS_BRIDGE_SECRET=REPLACE-WITH-WS-BRIDGE-SECRET  # REQUIRED em produção: usado pelo Codex Responses WS bridge
 
 # === App ===
 PORT=20128
@@ -122,11 +122,11 @@ BASE_URL=http://127.0.0.1:20128
 # Browser-facing URL used for OAuth callbacks, dashboard links, and generated public URLs.
 NEXT_PUBLIC_BASE_URL=https://llms.seudominio.com
 # Optional explicit public origin override for generated public asset URLs.
-# OMNIROUTE_PUBLIC_BASE_URL=https://llms.seudominio.com
+# MYROUTER_PUBLIC_BASE_URL=https://llms.seudominio.com
 
 # === Cloud Sync (optional) ===
-# CLOUD_URL=https://cloud.omniroute.online
-# NEXT_PUBLIC_CLOUD_URL=https://cloud.omniroute.online
+# CLOUD_URL=https://cloud.myrouter.online
+# NEXT_PUBLIC_CLOUD_URL=https://cloud.myrouter.online
 EOF
 ```
 
@@ -135,22 +135,22 @@ EOF
 ### 2.3 Uruchom kontener
 
 ```bash
-docker pull diegosouzapw/omniroute:latest
+docker pull diegosouzapw/myrouter:latest
 
 docker run -d \
-  --name omniroute \
+  --name myrouter \
   --restart unless-stopped \
-  --env-file /opt/omniroute/.env \
+  --env-file /opt/myrouter/.env \
   -p 20128:20128 \
-  -v omniroute-data:/app/data \
-  diegosouzapw/omniroute:latest
+  -v myrouter-data:/app/data \
+  diegosouzapw/myrouter:latest
 ```
 
 ### 2.4 Sprawdź, czy działa
 
 ```bash
-docker ps | grep omniroute
-docker logs omniroute --tail 20
+docker ps | grep myrouter
+docker logs myrouter --tail 20
 ```
 
 Powinno pojawić się: `[DB] SQLite database ready` oraz `listening on port 20128`.
@@ -183,7 +183,7 @@ chmod 600 /etc/nginx/ssl/origin.key
 ### 3.2 Konfiguracja Nginx
 
 ```bash
-cat > /etc/nginx/sites-available/omniroute << 'NGINX'
+cat > /etc/nginx/sites-available/myrouter << 'NGINX'
 # Default server — blocks direct access via IP
 server {
     listen 80 default_server;
@@ -196,7 +196,7 @@ server {
     return 444;
 }
 
-# OmniRoute — HTTPS
+# MyRouter — HTTPS
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -239,16 +239,16 @@ server {
 NGINX
 ```
 
-Utrzymuj limity czasu strumienia reverse proxy w zgodzie ze zmiennymi timeout OmniRoute. Jeśli podniesiesz
+Utrzymuj limity czasu strumienia reverse proxy w zgodzie ze zmiennymi timeout MyRouter. Jeśli podniesiesz
 `FETCH_TIMEOUT_MS` / `STREAM_IDLE_TIMEOUT_MS`, podnieś też `proxy_read_timeout` / `proxy_send_timeout`
 powyżej tego samego progu.
 
-OmniRoute używa `NEXT_PUBLIC_BASE_URL` jako kanonicznego, przeglądarkowego originu dla callbacków OAuth
+MyRouter używa `NEXT_PUBLIC_BASE_URL` jako kanonicznego, przeglądarkowego originu dla callbacków OAuth
 oraz generowanych publicznych linków. Uwierzytelnione zapisy w panelu korzystają z żądań same-origin
 oraz ochrony CSRF powiązanej z sesją, więc nie wymagają statycznego publicznego base URL. Nagłówki
 `X-Forwarded-*` powyżej nadal są przydatnymi metadanymi routingu, ale nie zastępują jawnego publicznego
 URL, gdy OAuth lub generowane linki przeglądarkowe go potrzebują. Włączaj
-`OMNIROUTE_TRUST_PROXY` tylko wtedy, gdy OmniRoute nie jest bezpośrednio osiągalny przez klientów, a Twój proxy
+`MYROUTER_TRUST_PROXY` tylko wtedy, gdy MyRouter nie jest bezpośrednio osiągalny przez klientów, a Twój proxy
 usuwa/przebudowuje przychodzące nagłówki forwarded.
 
 ### 3.3 Włącz i przetestuj
@@ -257,8 +257,8 @@ usuwa/przebudowuje przychodzące nagłówki forwarded.
 # Remove default configuration
 rm -f /etc/nginx/sites-enabled/default
 
-# Enable OmniRoute
-ln -sf /etc/nginx/sites-available/omniroute /etc/nginx/sites-enabled/omniroute
+# Enable MyRouter
+ln -sf /etc/nginx/sites-available/myrouter /etc/nginx/sites-enabled/myrouter
 
 # Test and reload
 nginx -t && systemctl reload nginx
@@ -302,40 +302,40 @@ curl -sI https://llms.seudominio.com/health
 ### Aktualizacja do nowej wersji
 
 ```bash
-docker pull diegosouzapw/omniroute:latest
-docker stop omniroute && docker rm omniroute
-docker run -d --name omniroute --restart unless-stopped \
-  --env-file /opt/omniroute/.env \
+docker pull diegosouzapw/myrouter:latest
+docker stop myrouter && docker rm myrouter
+docker run -d --name myrouter --restart unless-stopped \
+  --env-file /opt/myrouter/.env \
   -p 20128:20128 \
-  -v omniroute-data:/app/data \
-  diegosouzapw/omniroute:latest
+  -v myrouter-data:/app/data \
+  diegosouzapw/myrouter:latest
 ```
 
 ### Podgląd logów
 
 ```bash
-docker logs -f omniroute          # Real-time stream
-docker logs omniroute --tail 50   # Last 50 lines
+docker logs -f myrouter          # Real-time stream
+docker logs myrouter --tail 50   # Last 50 lines
 ```
 
 ### Ręczna kopia zapasowa bazy danych
 
 ```bash
 # Copy data from the volume to the host
-docker cp omniroute:/app/data ./backup-$(date +%F)
+docker cp myrouter:/app/data ./backup-$(date +%F)
 
 # Or compress the entire volume
-docker run --rm -v omniroute-data:/data -v $(pwd):/backup \
-  alpine tar czf /backup/omniroute-data-$(date +%F).tar.gz /data
+docker run --rm -v myrouter-data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/myrouter-data-$(date +%F).tar.gz /data
 ```
 
 ### Przywracanie z kopii zapasowej
 
 ```bash
-docker stop omniroute
-docker run --rm -v omniroute-data:/data -v $(pwd):/backup \
-  alpine sh -c "rm -rf /data/* && tar xzf /backup/omniroute-data-YYYY-MM-DD.tar.gz -C /"
-docker start omniroute
+docker stop myrouter
+docker run --rm -v myrouter-data:/data -v $(pwd):/backup \
+  alpine sh -c "rm -rf /data/* && tar xzf /backup/myrouter-data-YYYY-MM-DD.tar.gz -C /"
+docker start myrouter
 ```
 
 ---
@@ -404,13 +404,13 @@ Dla zdalnego dostępu przez Cloudflare Workers (bez bezpośredniego wystawiania 
 
 ```bash
 # In the local repository
-cd omnirouteCloud
+cd myrouterCloud
 npm install
 npx wrangler login
 npx wrangler deploy
 ```
 
-Zobacz też [TUNNELS_GUIDE.md](./TUNNELS_GUIDE.md) — przewodnik po Cloudflare Tunnel w tym repozytorium. Samodzielny worker `omnirouteCloud/` znajduje się w osobnym repozytorium towarzyszącym.
+Zobacz też [TUNNELS_GUIDE.md](./TUNNELS_GUIDE.md) — przewodnik po Cloudflare Tunnel w tym repozytorium. Samodzielny worker `myrouterCloud/` znajduje się w osobnym repozytorium towarzyszącym.
 
 ---
 
@@ -421,4 +421,4 @@ Zobacz też [TUNNELS_GUIDE.md](./TUNNELS_GUIDE.md) — przewodnik po Cloudflare 
 | 22    | SSH         | Publiczny (z fail2ban)        |
 | 80    | nginx HTTP  | Przekierowanie → HTTPS        |
 | 443   | nginx HTTPS | Przez Cloudflare Proxy        |
-| 20128 | OmniRoute   | Tylko localhost (przez nginx) |
+| 20128 | MyRouter   | Tylko localhost (przez nginx) |

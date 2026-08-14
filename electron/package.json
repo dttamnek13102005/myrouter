@@ -1,14 +1,14 @@
 {
-  "name": "omniroute-desktop",
+  "name": "myrouter-desktop",
   "version": "3.8.49",
-  "description": "OmniRoute Desktop Application",
+  "description": "MyRouter Desktop Application",
   "main": "main.js",
   "author": {
-    "name": "OmniRoute Team",
-    "email": "support@omniroute.online"
+    "name": "MyRouter Team",
+    "email": "support@myrouter.online"
   },
   "license": "MIT",
-  "homepage": "https://omniroute.online",
+  "homepage": "https://myrouter.online",
   "engines": {
     "node": ">=22.22.2 <23 || >=24.0.0 <27"
   },
@@ -40,9 +40,9 @@
     "undici": "^7.28.0"
   },
   "build": {
-    "appId": "online.omniroute.desktop",
-    "productName": "OmniRoute",
-    "copyright": "Copyright © 2025 OmniRoute",
+    "appId": "online.myrouter.desktop",
+    "productName": "MyRouter",
+    "copyright": "Copyright © 2025 MyRouter",
     "buildDependenciesFromSource": true,
     "directories": {
       "output": "dist-electron",
@@ -51,7 +51,7 @@
     "publish": {
       "provider": "github",
       "owner": "diegosouzapw",
-      "repo": "OmniRoute"
+      "repo": "MyRouter"
     },
     "files": [
       "main.js",

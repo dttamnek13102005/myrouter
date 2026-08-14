@@ -21,7 +21,7 @@ function forceNodeSqlite() {
 }
 
 function createTempDatabasePath(t: Parameters<typeof test>[1]) {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-node-sqlite-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "myrouter-node-sqlite-"));
   const databasePath = path.join(dir, "database.sqlite");
   t.after(() => fs.rmSync(dir, { recursive: true, force: true }));
   return databasePath;

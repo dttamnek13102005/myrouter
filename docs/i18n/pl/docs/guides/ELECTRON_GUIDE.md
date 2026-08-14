@@ -9,7 +9,7 @@ lastUpdated: 2026-06-28
 > **Źródło prawdy:** workspace `electron/`
 > **Ostatnia aktualizacja:** 2026-06-28 — v3.8.40
 
-OmniRoute dostarcza wieloplatformową aplikację desktopową (Windows / macOS / Linux) opartą na
+MyRouter dostarcza wieloplatformową aplikację desktopową (Windows / macOS / Linux) opartą na
 **Electron 41** + **electron-builder 26.10**. Aplikacja desktopowa uruchamia serwer standalone
 Next.js jako proces potomny, kieruje na niego `BrowserWindow` i dodaje
 zasobnik systemowy, auto-aktualizator, most IPC oraz bootstrap sekretów bez konfiguracji.
@@ -46,8 +46,8 @@ Potwierdzone w `electron/package.json`:
 | `electron-updater` | `^6.8.5`                   |
 | `better-sqlite3`   | `^12.9.0`                  |
 | Wersja aplikacji   | `3.8.0`                    |
-| Id aplikacji       | `online.omniroute.desktop` |
-| Nazwa produktu     | `OmniRoute`                |
+| Id aplikacji       | `online.myrouter.desktop` |
+| Nazwa produktu     | `MyRouter`                |
 
 ## Skrypty (główny `package.json`)
 
@@ -159,28 +159,28 @@ Przy pierwszym uruchomieniu proces główny automatycznie generuje i zapisuje br
 
 Zapis w `<DATA_DIR>/server.env`. `DATA_DIR` rozwiązuje się do:
 
-- Windows: `%APPDATA%\omniroute`
-- Linux: `$XDG_CONFIG_HOME/omniroute` lub `~/.omniroute`
-- macOS: `~/.omniroute`
+- Windows: `%APPDATA%\myrouter`
+- Linux: `$XDG_CONFIG_HOME/myrouter` lub `~/.myrouter`
+- macOS: `~/.myrouter`
 
 ## Okno i zasobnik
 
 - `BrowserWindow`: 1400×900 (min. 1024×700), `backgroundColor: "#0a0a0a"`.
 - macOS: `titleBarStyle: "hiddenInset"`, traffic-light w `{ x: 16, y: 16 }`.
 - Windows/Linux: natywny pasek tytułu.
-- Przycisk zamknięcia minimalizuje do trayu; menu trayu ma **Open OmniRoute**, **Open Dashboard** (zewnętrzna przeglądarka), podmenu **Server Port**, **Check for Updates**, **Quit**.
+- Przycisk zamknięcia minimalizuje do trayu; menu trayu ma **Open MyRouter**, **Open Dashboard** (zewnętrzna przeglądarka), podmenu **Server Port**, **Check for Updates**, **Quit**.
 
 ## Content Security Policy
 
 Ustawiane przez `session.defaultSession.webRequest.onHeadersReceived`. Istotne dyrektywy:
 
 - `frame-ancestors 'none'`, `object-src 'none'`, `child-src 'none'`
-- `connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:* https://*.omniroute.online https://*.omniroute.dev`
+- `connect-src 'self' http://localhost:* http://127.0.0.1:* ws://localhost:* ws://127.0.0.1:* https://*.myrouter.online https://*.myrouter.dev`
 - Tryb dev dodaje `'unsafe-eval'` tylko do `script-src`
 
 ## Auto-aktualizacja
 
-Używa `electron-updater` z providerem GitHub (`diegosouzapw/OmniRoute`).
+Używa `electron-updater` z providerem GitHub (`diegosouzapw/MyRouter`).
 
 - `autoDownload = false`, `autoInstallOnAppQuit = true`
 - Zdarzenia przekazywane do renderera przez IPC `update-status`:
@@ -252,11 +252,11 @@ Podpis AppImage jest opcjonalny — ustaw `LINUX_GPG_KEY`, jeśli podpisujesz.
 
 Artefakty lądują w `electron/dist-electron/`:
 
-- `OmniRoute Setup X.Y.Z.exe`, `OmniRoute-X.Y.Z-portable.exe` (Windows)
-- `OmniRoute-X.Y.Z-mac.dmg`, `OmniRoute-X.Y.Z-arm64-mac.dmg` (macOS)
-- `OmniRoute-X.Y.Z.AppImage`, `omniroute-desktop_X.Y.Z_amd64.deb` (Linux)
+- `MyRouter Setup X.Y.Z.exe`, `MyRouter-X.Y.Z-portable.exe` (Windows)
+- `MyRouter-X.Y.Z-mac.dmg`, `MyRouter-X.Y.Z-arm64-mac.dmg` (macOS)
+- `MyRouter-X.Y.Z.AppImage`, `myrouter-desktop_X.Y.Z_amd64.deb` (Linux)
 
-Wydania są publikowane w GitHub Releases (`diegosouzapw/OmniRoute`), skąd `electron-updater` sprawdza też nowe wersje.
+Wydania są publikowane w GitHub Releases (`diegosouzapw/MyRouter`), skąd `electron-updater` sprawdza też nowe wersje.
 
 ## Rozwiązywanie problemów
 

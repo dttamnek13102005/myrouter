@@ -1,17 +1,17 @@
 ---
-title: "OmniRoute vs alternatywy"
+title: "MyRouter vs alternatywy"
 version: 3.8.43
 lastUpdated: 2026-07-01
 ---
 
-# OmniRoute vs alternatywy
+# MyRouter vs alternatywy
 
 Obiektywne porównanie funkcji z popularnymi open-source'owymi routerami AI.
 
 > **Metodologia**: Publiczne repozytoria audytowane w 2026-Q2. Wersje jak podano.
 > Poprawki zgłaszaj przez PR — zależy nam na dokładności.
 
-| Funkcja                                             |                   OmniRoute 3.8                    |  LiteLLM 1.x   | OpenRouter (SaaS) |   Portkey   |
+| Funkcja                                             |                   MyRouter 3.8                    |  LiteLLM 1.x   | OpenRouter (SaaS) |   Portkey   |
 | --------------------------------------------------- | :------------------------------------------------: | :------------: | :---------------: | :---------: |
 | **Dostawcy**                                        |                      **237+**                      |      ~100      |        ~50        |     ~30     |
 | **Dostawcy free-tier**                              |                      **90+**                       |      n/a       |    passthrough    |     n/a     |
@@ -39,7 +39,7 @@ Obiektywne porównanie funkcji z popularnymi open-source'owymi routerami AI.
 | **Wsparcie tuneli (Cloudflared, Tailscale, Ngrok)** |                         ✅                         |       ❌       |        n/a        |     n/a     |
 | **Licencja**                                        |                        MIT                         |      MIT       |    proprietary    | proprietary |
 
-## Kiedy wybrać OmniRoute
+## Kiedy wybrać MyRouter
 
 - Self-hostujesz i chcesz **maksymalnego pokrycia dostawców** (237+, 90+ z free tier)
 - Potrzebujesz **wbudowanego serwera MCP** (narzędzia LLM, pamięć, skills wystawione jako tools)

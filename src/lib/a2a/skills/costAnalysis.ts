@@ -5,7 +5,7 @@
  */
 
 import type { A2ATask, TaskArtifact } from "../taskManager";
-import { resolveOmniRouteBaseUrl } from "@/shared/utils/resolveOmniRouteBaseUrl";
+import { resolveMyRouterBaseUrl } from "@/shared/utils/resolveMyRouterBaseUrl";
 import { formatCost } from "@/shared/utils/formatting";
 import { toNumber } from "@/shared/utils/numeric";
 
@@ -18,8 +18,8 @@ type CostEntry = {
   tokens: number;
 };
 
-const OMNIROUTE_BASE_URL = resolveOmniRouteBaseUrl();
-const OMNIROUTE_API_KEY = process.env.OMNIROUTE_API_KEY || "";
+const MYROUTER_BASE_URL = resolveMyRouterBaseUrl();
+const MYROUTER_API_KEY = process.env.MYROUTER_API_KEY || "";
 
 function detectRange(task: A2ATask): string {
   const metadataRange = task.input.metadata?.range;
@@ -34,10 +34,10 @@ function detectRange(task: A2ATask): string {
 }
 
 async function costFetch(path: string): Promise<AnalyticsRecord> {
-  const url = `${OMNIROUTE_BASE_URL}${path}`;
+  const url = `${MYROUTER_BASE_URL}${path}`;
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(OMNIROUTE_API_KEY ? { Authorization: `Bearer ${OMNIROUTE_API_KEY}` } : {}),
+    ...(MYROUTER_API_KEY ? { Authorization: `Bearer ${MYROUTER_API_KEY}` } : {}),
   };
   const response = await fetch(url, { headers, signal: AbortSignal.timeout(15000) });
   if (!response.ok) {

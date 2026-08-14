@@ -2,12 +2,12 @@
  * myrouter logo SVG — modern M-shaped router topology with network nodes.
  * Matches the favicon and app icon design.
  */
-type OmniRouteLogoProps = {
+type MyRouterLogoProps = {
   size?: number;
   className?: string;
 };
 
-export default function OmniRouteLogo({ size = 20, className = "" }: OmniRouteLogoProps) {
+export default function MyRouterLogo({ size = 20, className = "" }: MyRouterLogoProps) {
   return (
     <svg
       width={size}

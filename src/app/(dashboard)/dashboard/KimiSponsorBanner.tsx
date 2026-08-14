@@ -9,15 +9,15 @@ import { shouldShowKimiSponsorBanner } from "./kimiSponsorBannerGate";
 // Official Kimi partnership tracking link — keep in sync with README.md's
 // Sponsors section and the aff links wired in the providers onboarding UI
 // (ProviderPageHeader.tsx).
-const KIMI_CODING_AFF_URL = "https://www.kimi.com/code?aff=omniroute";
+const KIMI_CODING_AFF_URL = "https://www.kimi.com/code?aff=myrouter";
 
 // Versioned dismissal key — bump the suffix (e.g. `-v2`) if the banner's
 // offer/copy ever changes materially enough to warrant re-showing it to
 // users who already dismissed the previous version.
-const DISMISS_STORAGE_KEY = "omniroute-kimi-sponsor-banner-dismissed-v1";
+const DISMISS_STORAGE_KEY = "myrouter-kimi-sponsor-banner-dismissed-v1";
 // Same-tab signal for the dismiss button, since writing localStorage doesn't
 // fire a "storage" event in the tab that wrote it.
-const DISMISS_EVENT = "omniroute:kimi-sponsor-banner-dismissed";
+const DISMISS_EVENT = "myrouter:kimi-sponsor-banner-dismissed";
 
 function isNotDismissed(): boolean {
   try {
@@ -41,7 +41,7 @@ function getServerSnapshot() {
 }
 
 /**
- * Dismissable banner announcing the Kimi (Moonshot AI) official OmniRoute
+ * Dismissable banner announcing the Kimi (Moonshot AI) official MyRouter
  * partnership on the dashboard home page. Self-contained: reads the app's own
  * version (APP_CONFIG.version) to decide whether it is still inside the
  * agreed display window (see kimiSponsorBannerGate.ts) and persists dismissal via

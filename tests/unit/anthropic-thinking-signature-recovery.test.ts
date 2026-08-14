@@ -5,9 +5,9 @@ const {
   executeWithAnthropicThinkingSignatureRecovery,
   isAnthropicThinkingSignatureError,
   stripHistoricalThinkingForSignatureRecovery,
-} = await import("@omniroute/open-sse/handlers/chatCore/passthroughHelpers.ts");
+} = await import("@myrouter/open-sse/handlers/chatCore/passthroughHelpers.ts");
 const { recoverAnthropicThinkingSignature } = await import(
-  "@omniroute/open-sse/handlers/chatCore/thinkingSignatureRecovery.ts"
+  "@myrouter/open-sse/handlers/chatCore/thinkingSignatureRecovery.ts"
 );
 
 function makeHistory() {

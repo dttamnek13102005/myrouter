@@ -4,7 +4,7 @@
 
 ---
 
-Referensi lengkap untuk semua titik akhir API OmniRoute.
+Referensi lengkap untuk semua titik akhir API MyRouter.
 
 ---
 
@@ -42,16 +42,16 @@ Content-Type: application/json
 
 | Header                   | Arah      | Deskripsi                                                    |
 | ------------------------ | --------- | ------------------------------------------------------------ |
-| `X-OmniRoute-No-Cache`   | Permintaan | Atur ke `true` untuk melewati cache                          |
-| `X-OmniRoute-Progress`   | Permintaan | Atur ke `true` untuk event progres                           |
+| `X-MyRouter-No-Cache`   | Permintaan | Atur ke `true` untuk melewati cache                          |
+| `X-MyRouter-Progress`   | Permintaan | Atur ke `true` untuk event progres                           |
 | `X-Session-Id`           | Permintaan | Kunci sesi tetap untuk afinitas sesi eksternal               |
 | `x_session_id`           | Permintaan | Varian garis bawah juga diterima (HTTP langsung)             |
 | `Idempotency-Key`        | Permintaan | Kunci deduplikasi (jendela 5 detik)                          |
 | `X-Request-Id`           | Permintaan | Kunci deduplikasi alternatif                                 |
-| `X-OmniRoute-Cache`      | Respons   | `HIT` atau `MISS` (non-streaming)                            |
-| `X-OmniRoute-Idempotent` | Respons   | `true` jika dideduplikasi                                    |
-| `X-OmniRoute-Progress`   | Respons   | `enabled` jika pelacakan progres aktif                       |
-| `X-OmniRoute-Session-Id` | Respons   | ID sesi efektif yang digunakan OmniRoute                     |
+| `X-MyRouter-Cache`      | Respons   | `HIT` atau `MISS` (non-streaming)                            |
+| `X-MyRouter-Idempotent` | Respons   | `true` jika dideduplikasi                                    |
+| `X-MyRouter-Progress`   | Respons   | `enabled` jika pelacakan progres aktif                       |
+| `X-MyRouter-Session-Id` | Respons   | ID sesi efektif yang digunakan MyRouter                     |
 
 > Catatan Nginx: jika Anda mengandalkan header bergaris bawah (misalnya `x_session_id`), aktifkan `underscores_in_headers on;`.
 
@@ -350,7 +350,7 @@ Memperbaiki variabel lingkungan OAuth yang hilang atau rusak untuk penyedia tert
 {
   "success": true,
   "repaired": ["CLAUDE_CODE_OAUTH_CLIENT_ID", "CLAUDE_CODE_OAUTH_CLIENT_SECRET"],
-  "backupPath": "/home/user/.omniroute/backups/env-repair-2026-04-11.bak"
+  "backupPath": "/home/user/.myrouter/backups/env-repair-2026-04-11.bak"
 }
 ```
 

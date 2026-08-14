@@ -34,23 +34,23 @@ function logSwallowedDriverError(driver: string, err: unknown): void {
 }
 
 declare global {
-  var __omnirouteSqlJsAdapters: Map<string, SqliteAdapter> | undefined;
-  var __omnirouteSqlJsInitPromises: Map<string, Promise<SqliteAdapter>> | undefined;
-  var __omnirouteSqlJsPreInitErrors: Map<string, string> | undefined;
+  var __myrouterSqlJsAdapters: Map<string, SqliteAdapter> | undefined;
+  var __myrouterSqlJsInitPromises: Map<string, Promise<SqliteAdapter>> | undefined;
+  var __myrouterSqlJsPreInitErrors: Map<string, string> | undefined;
 }
 
 function getSqlJsCache(): Map<string, SqliteAdapter> {
-  if (!globalThis.__omnirouteSqlJsAdapters) {
-    globalThis.__omnirouteSqlJsAdapters = new Map();
+  if (!globalThis.__myrouterSqlJsAdapters) {
+    globalThis.__myrouterSqlJsAdapters = new Map();
   }
-  return globalThis.__omnirouteSqlJsAdapters;
+  return globalThis.__myrouterSqlJsAdapters;
 }
 
 function getSqlJsPreInitErrorCache(): Map<string, string> {
-  if (!globalThis.__omnirouteSqlJsPreInitErrors) {
-    globalThis.__omnirouteSqlJsPreInitErrors = new Map();
+  if (!globalThis.__myrouterSqlJsPreInitErrors) {
+    globalThis.__myrouterSqlJsPreInitErrors = new Map();
   }
-  return globalThis.__omnirouteSqlJsPreInitErrors;
+  return globalThis.__myrouterSqlJsPreInitErrors;
 }
 
 /**
@@ -72,10 +72,10 @@ export function getSqlJsPreInitError(filePath: string): string | undefined {
  * fs.readFileSync + WASM decode independentemente (#6628 — thundering herd).
  */
 function getSqlJsPendingCache(): Map<string, Promise<SqliteAdapter>> {
-  if (!globalThis.__omnirouteSqlJsInitPromises) {
-    globalThis.__omnirouteSqlJsInitPromises = new Map();
+  if (!globalThis.__myrouterSqlJsInitPromises) {
+    globalThis.__myrouterSqlJsInitPromises = new Map();
   }
-  return globalThis.__omnirouteSqlJsInitPromises;
+  return globalThis.__myrouterSqlJsInitPromises;
 }
 
 /**

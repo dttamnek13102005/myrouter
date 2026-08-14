@@ -11,26 +11,26 @@ import {
 
 test("patchBasePathLiterals rewrites empty basePath literals", () => {
   const input = 'const cfg={basePath:"",assetPrefix:void 0};"basePath":""';
-  const output = patchBasePathLiterals(input, "/omniroute");
-  assert.match(output, /basePath:"\/omniroute"/);
-  assert.match(output, /"basePath":"\/omniroute"/);
+  const output = patchBasePathLiterals(input, "/myrouter");
+  assert.match(output, /basePath:"\/myrouter"/);
+  assert.match(output, /"basePath":"\/myrouter"/);
 });
 
 test("patchJsonManifestFile updates nested basePath fields", () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-basepath-"));
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "myrouter-basepath-"));
   const filePath = path.join(dir, "routes-manifest.json");
   fs.writeFileSync(
     filePath,
     JSON.stringify({ basePath: "", nested: { basePath: "" } }, null, 2)
   );
-  assert.equal(patchJsonManifestFile(filePath, "/omniroute"), true);
+  assert.equal(patchJsonManifestFile(filePath, "/myrouter"), true);
   const parsed = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  assert.equal(parsed.basePath, "/omniroute");
-  assert.equal(parsed.nested.basePath, "/omniroute");
+  assert.equal(parsed.basePath, "/myrouter");
+  assert.equal(parsed.nested.basePath, "/myrouter");
 });
 
 test("patchStandaloneBasePath rewrites a root-path standalone tree", () => {
-  const appRoot = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-standalone-"));
+  const appRoot = fs.mkdtempSync(path.join(os.tmpdir(), "myrouter-standalone-"));
   const distRoot = path.join(appRoot, ".build", "next");
   fs.mkdirSync(path.join(distRoot, "server"), { recursive: true });
   fs.writeFileSync(
@@ -41,20 +41,20 @@ test("patchStandaloneBasePath rewrites a root-path standalone tree", () => {
     path.join(distRoot, "server", "chunk.js"),
     'export const config={basePath:""};'
   );
-  fs.writeFileSync(path.join(appRoot, "BUILD_OMNIROUTE_BASE_PATH"), "\n");
+  fs.writeFileSync(path.join(appRoot, "BUILD_MYROUTER_BASE_PATH"), "\n");
 
   const result = patchStandaloneBasePath({
     appRoot,
     fromBasePath: "",
-    toBasePath: "/omniroute",
+    toBasePath: "/myrouter",
   });
 
   assert.equal(result.changed, true);
   assert.equal(
     JSON.parse(fs.readFileSync(path.join(distRoot, "routes-manifest.json"), "utf8")).basePath,
-    "/omniroute"
+    "/myrouter"
   );
-  assert.match(fs.readFileSync(path.join(distRoot, "server", "chunk.js"), "utf8"), /\/omniroute/);
+  assert.match(fs.readFileSync(path.join(distRoot, "server", "chunk.js"), "utf8"), /\/myrouter/);
 });
 
 test("patchStandaloneBasePath rejects mismatched non-root builds", () => {
@@ -63,7 +63,7 @@ test("patchStandaloneBasePath rejects mismatched non-root builds", () => {
       patchStandaloneBasePath({
         appRoot: process.cwd(),
         fromBasePath: "/custom",
-        toBasePath: "/omniroute",
+        toBasePath: "/myrouter",
       }),
     /does not match the image build/
   );

@@ -8,10 +8,10 @@
  * mirrors the first time it was written as a duplicate.
  */
 
-import { appendNoThinkingVariants } from "@omniroute/open-sse/utils/noThinkingAlias";
-import { appendClaudeEffortVariants } from "@omniroute/open-sse/utils/claudeEffortVariants";
-import { appendSyncedEffortVariants } from "@omniroute/open-sse/utils/syncedEffortVariants";
-import { appendCcDiscoveryAliases } from "@omniroute/open-sse/utils/ccDiscoveryAliases";
+import { appendNoThinkingVariants } from "@myrouter/open-sse/utils/noThinkingAlias";
+import { appendClaudeEffortVariants } from "@myrouter/open-sse/utils/claudeEffortVariants";
+import { appendSyncedEffortVariants } from "@myrouter/open-sse/utils/syncedEffortVariants";
+import { appendCcDiscoveryAliases } from "@myrouter/open-sse/utils/ccDiscoveryAliases";
 import { isCcAliasGlobalEnabled, getCcAliasSettingsBulk } from "@/lib/db/ccDiscoveryAliases";
 import { buildCcAliasPredicate } from "./ccAliasPredicate";
 import { hasEligibleConnectionForModel } from "@/domain/connectionModelRules";

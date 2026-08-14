@@ -88,15 +88,15 @@ import {
 } from "../services/compression/engines/mcpAccessibility/constants.ts";
 import { getDbInstance } from "../../src/lib/db/core.ts";
 import { normalizeQuotaResponse } from "../../src/shared/contracts/quota.ts";
-import { resolveOmniRouteBaseUrl } from "../../src/shared/utils/resolveOmniRouteBaseUrl.ts";
+import { resolveMyRouterBaseUrl } from "../../src/shared/utils/resolveMyRouterBaseUrl.ts";
 import { sanitizeErrorMessage } from "../utils/error.ts";
 import { getMcpModelsCatalog } from "./catalog.ts";
 export { getMcpModelsCatalog } from "./catalog.ts";
 
-const OMNIROUTE_BASE_URL = resolveOmniRouteBaseUrl();
-const MCP_ENFORCE_SCOPES = process.env.OMNIROUTE_MCP_ENFORCE_SCOPES === "true";
+const MYROUTER_BASE_URL = resolveMyRouterBaseUrl();
+const MCP_ENFORCE_SCOPES = process.env.MYROUTER_MCP_ENFORCE_SCOPES === "true";
 const MCP_ALLOWED_SCOPES = new Set(
-  (process.env.OMNIROUTE_MCP_SCOPES || "")
+  (process.env.MYROUTER_MCP_SCOPES || "")
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean)
@@ -189,13 +189,13 @@ function normalizeComboModels(
   });
 }
 
-function getOmniRouteApiKey(): string {
-  return process.env.OMNIROUTE_API_KEY || "";
+function getMyRouterApiKey(): string {
+  return process.env.MYROUTER_API_KEY || "";
 }
 
-export async function omniRouteFetch(path: string, options: RequestInit = {}): Promise<unknown> {
-  const url = `${OMNIROUTE_BASE_URL}${path}`;
-  const apiKey = getOmniRouteApiKey();
+export async function myRouterFetch(path: string, options: RequestInit = {}): Promise<unknown> {
+  const url = `${MYROUTER_BASE_URL}${path}`;
+  const apiKey = getMyRouterApiKey();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     // Static env key is only a fallback; the per-caller MCP identity forwarded via
@@ -210,7 +210,7 @@ export async function omniRouteFetch(path: string, options: RequestInit = {}): P
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "Unknown error");
-    throw new Error(`OmniRoute API error [${response.status}]: ${errorText}`);
+    throw new Error(`MyRouter API error [${response.status}]: ${errorText}`);
   }
 
   return response.json();
@@ -269,9 +269,9 @@ async function handleGetHealth() {
   const start = Date.now();
   try {
     const [healthRaw, resilienceRaw, rateLimitsRaw] = await Promise.allSettled([
-      omniRouteFetch("/api/monitoring/health"),
-      omniRouteFetch("/api/resilience"),
-      omniRouteFetch("/api/rate-limits"),
+      myRouterFetch("/api/monitoring/health"),
+      myRouterFetch("/api/resilience"),
+      myRouterFetch("/api/rate-limits"),
     ]);
 
     const health = healthRaw.status === "fulfilled" ? toRecord(healthRaw.value) : {};
@@ -307,11 +307,11 @@ async function handleGetHealth() {
         : undefined,
     };
 
-    await logToolCall("omniroute_get_health", {}, result, Date.now() - start, true);
+    await logToolCall("myrouter_get_health", {}, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_get_health", {}, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_get_health", {}, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -319,7 +319,7 @@ async function handleGetHealth() {
 async function handleListCombos(args: { includeMetrics?: boolean }) {
   const start = Date.now();
   try {
-    const combosRaw = await omniRouteFetch("/api/combos");
+    const combosRaw = await myRouterFetch("/api/combos");
     const combosRecord = toRecord(combosRaw);
     const combos = Array.isArray(combosRecord.combos)
       ? combosRecord.combos
@@ -328,7 +328,7 @@ async function handleListCombos(args: { includeMetrics?: boolean }) {
         : [];
     let metrics: JsonRecord = {};
     if (args.includeMetrics) {
-      metrics = toRecord(await omniRouteFetch("/api/combos/metrics").catch(() => ({})));
+      metrics = toRecord(await myRouterFetch("/api/combos/metrics").catch(() => ({})));
     }
 
     const result = {
@@ -349,11 +349,11 @@ async function handleListCombos(args: { includeMetrics?: boolean }) {
       }),
     };
 
-    await logToolCall("omniroute_list_combos", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_list_combos", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_list_combos", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_list_combos", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -361,14 +361,14 @@ async function handleListCombos(args: { includeMetrics?: boolean }) {
 async function handleGetComboMetrics(args: { comboId: string }) {
   const start = Date.now();
   try {
-    const result = await omniRouteFetch(
+    const result = await myRouterFetch(
       `/api/combos/metrics?comboId=${encodeURIComponent(args.comboId)}`
     );
-    await logToolCall("omniroute_get_combo_metrics", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_get_combo_metrics", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_get_combo_metrics", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_get_combo_metrics", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -376,15 +376,15 @@ async function handleGetComboMetrics(args: { comboId: string }) {
 async function handleSwitchCombo(args: { comboId: string; active: boolean }) {
   const start = Date.now();
   try {
-    const result = await omniRouteFetch(`/api/combos/${encodeURIComponent(args.comboId)}`, {
+    const result = await myRouterFetch(`/api/combos/${encodeURIComponent(args.comboId)}`, {
       method: "PUT",
       body: JSON.stringify({ isActive: args.active }),
     });
-    await logToolCall("omniroute_switch_combo", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_switch_combo", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_switch_combo", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_switch_combo", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -396,16 +396,16 @@ async function handleCheckQuota(args: { provider?: string; connectionId?: string
     if (args.connectionId) path += `?connectionId=${encodeURIComponent(args.connectionId)}`;
     else if (args.provider) path += `?provider=${encodeURIComponent(args.provider)}`;
 
-    const result = normalizeQuotaResponse(await omniRouteFetch(path), {
+    const result = normalizeQuotaResponse(await myRouterFetch(path), {
       provider: args.provider || null,
       connectionId: args.connectionId || null,
     });
 
-    await logToolCall("omniroute_check_quota", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_check_quota", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_check_quota", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_check_quota", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -429,7 +429,7 @@ async function handleRouteRequest(args: {
       body["x-combo"] = args.combo;
     }
 
-    const raw = (await omniRouteFetch("/v1/chat/completions", {
+    const raw = (await myRouterFetch("/v1/chat/completions", {
       method: "POST",
       body: JSON.stringify(body),
     })) as JsonRecord;
@@ -461,7 +461,7 @@ async function handleRouteRequest(args: {
     };
 
     await logToolCall(
-      "omniroute_route_request",
+      "myrouter_route_request",
       { model: args.model, messageCount: args.messages.length },
       result.routing,
       Date.now() - start,
@@ -471,7 +471,7 @@ async function handleRouteRequest(args: {
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     await logToolCall(
-      "omniroute_route_request",
+      "myrouter_route_request",
       { model: args.model },
       null,
       Date.now() - start,
@@ -494,7 +494,7 @@ async function handleCostReport(args: { period?: string }) {
     };
     const range = rangeMap[period] || "30d";
     const raw = toRecord(
-      await omniRouteFetch(`/api/usage/analytics?range=${encodeURIComponent(range)}`)
+      await myRouterFetch(`/api/usage/analytics?range=${encodeURIComponent(range)}`)
     );
     const tokenCount = toRecord(raw.tokenCount);
     const budget = toRecord(raw.budget);
@@ -515,11 +515,11 @@ async function handleCostReport(args: { period?: string }) {
       },
     };
 
-    await logToolCall("omniroute_cost_report", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_cost_report", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_cost_report", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_cost_report", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -530,7 +530,7 @@ async function handleListModelsCatalog(args: { provider?: string; capability?: s
     const result = await getMcpModelsCatalog(args);
 
     await logToolCall(
-      "omniroute_list_models_catalog",
+      "myrouter_list_models_catalog",
       args,
       { modelCount: result.models.length },
       Date.now() - start,
@@ -539,7 +539,7 @@ async function handleListModelsCatalog(args: { provider?: string; capability?: s
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_list_models_catalog", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_list_models_catalog", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -568,16 +568,16 @@ async function handleWebSearch(args: {
     };
     if (args.provider) body.provider = args.provider;
 
-    const result = await omniRouteFetch("/v1/search", {
+    const result = await myRouterFetch("/v1/search", {
       method: "POST",
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(60000),
     });
-    await logToolCall("omniroute_web_search", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_web_search", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_web_search", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_web_search", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
@@ -601,23 +601,23 @@ async function handleWebFetch(args: {
     if (args.depth !== undefined) body.depth = args.depth;
     if (args.wait_for_selector) body.wait_for_selector = args.wait_for_selector;
 
-    const result = await omniRouteFetch("/v1/web/fetch", {
+    const result = await myRouterFetch("/v1/web/fetch", {
       method: "POST",
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(60000),
     });
-    await logToolCall("omniroute_web_fetch", args, result, Date.now() - start, true);
+    await logToolCall("myrouter_web_fetch", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    await logToolCall("omniroute_web_fetch", args, null, Date.now() - start, false, msg);
+    await logToolCall("myrouter_web_fetch", args, null, Date.now() - start, false, msg);
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
 }
 
 export function createMcpServer(): McpServer {
   const server = new McpServer({
-    name: "omniroute",
+    name: "myrouter",
     version: process.env.npm_package_version || "1.8.1",
   });
   const mcpDescriptionCompressionEnabled = readMcpDescriptionCompressionEnabled();
@@ -688,315 +688,315 @@ export function createMcpServer(): McpServer {
   ]);
 
   server.registerTool(
-    "omniroute_get_health",
+    "myrouter_get_health",
     {
       description:
-        "Returns OmniRoute health status including uptime, memory, circuit breakers, rate limits, and cache stats",
+        "Returns MyRouter health status including uptime, memory, circuit breakers, rate limits, and cache stats",
       inputSchema: getHealthInput,
     },
-    withScopeEnforcement("omniroute_get_health", async (args) => {
+    withScopeEnforcement("myrouter_get_health", async (args) => {
       getHealthInput.parse(args ?? {});
       return handleGetHealth();
     })
   );
 
   server.registerTool(
-    "omniroute_list_combos",
+    "myrouter_list_combos",
     {
       description:
         "Lists all configured combos (model chains) with strategies and optional metrics",
       inputSchema: listCombosInput,
     },
-    withScopeEnforcement("omniroute_list_combos", (args) =>
+    withScopeEnforcement("myrouter_list_combos", (args) =>
       handleListCombos(listCombosInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_get_combo_metrics",
+    "myrouter_get_combo_metrics",
     {
       description: "Returns detailed performance metrics for a specific combo",
       inputSchema: getComboMetricsInput,
     },
-    withScopeEnforcement("omniroute_get_combo_metrics", (args) =>
+    withScopeEnforcement("myrouter_get_combo_metrics", (args) =>
       handleGetComboMetrics(getComboMetricsInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_switch_combo",
+    "myrouter_switch_combo",
     {
       description: "Activates or deactivates a combo for routing",
       inputSchema: switchComboInput,
     },
-    withScopeEnforcement("omniroute_switch_combo", (args) =>
+    withScopeEnforcement("myrouter_switch_combo", (args) =>
       handleSwitchCombo(switchComboInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_check_quota",
+    "myrouter_check_quota",
     {
       description: "Checks remaining API quota for one or all providers",
       inputSchema: checkQuotaInput,
     },
-    withScopeEnforcement("omniroute_check_quota", (args) =>
+    withScopeEnforcement("myrouter_check_quota", (args) =>
       handleCheckQuota(checkQuotaInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_route_request",
+    "myrouter_route_request",
     {
-      description: "Sends a chat completion request through OmniRoute intelligent routing",
+      description: "Sends a chat completion request through MyRouter intelligent routing",
       inputSchema: routeRequestInput,
     },
-    withScopeEnforcement("omniroute_route_request", (args) =>
+    withScopeEnforcement("myrouter_route_request", (args) =>
       handleRouteRequest(routeRequestInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_cost_report",
+    "myrouter_cost_report",
     {
       description: "Generates a cost report for the specified period",
       inputSchema: costReportInput,
     },
-    withScopeEnforcement("omniroute_cost_report", (args) =>
+    withScopeEnforcement("myrouter_cost_report", (args) =>
       handleCostReport(costReportInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_list_models_catalog",
+    "myrouter_list_models_catalog",
     {
       description: "Lists all available AI models across providers with capabilities and pricing",
       inputSchema: listModelsCatalogInput,
     },
-    withScopeEnforcement("omniroute_list_models_catalog", (args) =>
+    withScopeEnforcement("myrouter_list_models_catalog", (args) =>
       handleListModelsCatalog(listModelsCatalogInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_simulate_route",
+    "myrouter_simulate_route",
     {
       description: "Simulates the routing path a request would take without executing it (dry-run)",
       inputSchema: simulateRouteInput,
     },
-    withScopeEnforcement("omniroute_simulate_route", (args) =>
+    withScopeEnforcement("myrouter_simulate_route", (args) =>
       handleSimulateRoute(simulateRouteInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_set_budget_guard",
+    "myrouter_set_budget_guard",
     {
       description:
         "Sets a session budget limit with configurable action when exceeded (degrade/block/alert)",
       inputSchema: setBudgetGuardInput,
     },
-    withScopeEnforcement("omniroute_set_budget_guard", (args) =>
+    withScopeEnforcement("myrouter_set_budget_guard", (args) =>
       handleSetBudgetGuard(setBudgetGuardInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_set_routing_strategy",
+    "myrouter_set_routing_strategy",
     {
       description:
         "Updates combo routing strategy at runtime (priority/weighted/round-robin/auto/etc.)",
       inputSchema: setRoutingStrategyInput,
     },
-    withScopeEnforcement("omniroute_set_routing_strategy", (args) =>
+    withScopeEnforcement("myrouter_set_routing_strategy", (args) =>
       handleSetRoutingStrategy(setRoutingStrategyInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_set_resilience_profile",
+    "myrouter_set_resilience_profile",
     {
       description:
         "Applies a resilience profile controlling circuit breakers, retries, timeouts, and fallback depth",
       inputSchema: setResilienceProfileInput,
     },
-    withScopeEnforcement("omniroute_set_resilience_profile", (args) =>
+    withScopeEnforcement("myrouter_set_resilience_profile", (args) =>
       handleSetResilienceProfile(setResilienceProfileInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_test_combo",
+    "myrouter_test_combo",
     {
       description:
         "Tests each provider in a combo with a real prompt, reporting latency, cost, and success per provider",
       inputSchema: testComboInput,
     },
-    withScopeEnforcement("omniroute_test_combo", (args) =>
+    withScopeEnforcement("myrouter_test_combo", (args) =>
       handleTestCombo(testComboInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_get_provider_metrics",
+    "myrouter_get_provider_metrics",
     {
       description:
         "Returns detailed metrics for a specific provider including latency percentiles and circuit breaker state",
       inputSchema: getProviderMetricsInput,
     },
-    withScopeEnforcement("omniroute_get_provider_metrics", (args) =>
+    withScopeEnforcement("myrouter_get_provider_metrics", (args) =>
       handleGetProviderMetrics(getProviderMetricsInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_best_combo_for_task",
+    "myrouter_best_combo_for_task",
     {
       description:
         "Recommends the best combo for a task type based on provider fitness and constraints",
       inputSchema: bestComboForTaskInput,
     },
-    withScopeEnforcement("omniroute_best_combo_for_task", (args) =>
+    withScopeEnforcement("myrouter_best_combo_for_task", (args) =>
       handleBestComboForTask(bestComboForTaskInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_explain_route",
+    "myrouter_explain_route",
     {
       description:
         "Explains why a request was routed to a specific provider, showing scoring factors and fallbacks",
       inputSchema: explainRouteInput,
     },
-    withScopeEnforcement("omniroute_explain_route", (args) =>
+    withScopeEnforcement("myrouter_explain_route", (args) =>
       handleExplainRoute(explainRouteInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_pick_fastest_model",
+    "myrouter_pick_fastest_model",
     {
       description: "Picks the fastest reliable provider-model pair from live telemetry.",
       inputSchema: pickFastestModelInput,
     },
-    withScopeEnforcement("omniroute_pick_fastest_model", (args) =>
+    withScopeEnforcement("myrouter_pick_fastest_model", (args) =>
       handlePickFastestModel(pickFastestModelInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_get_session_snapshot",
+    "myrouter_get_session_snapshot",
     {
       description:
         "Returns a full snapshot of the current working session: cost, tokens, top models, errors, budget status",
       inputSchema: getSessionSnapshotInput,
     },
-    withScopeEnforcement("omniroute_get_session_snapshot", async (args) => {
+    withScopeEnforcement("myrouter_get_session_snapshot", async (args) => {
       getSessionSnapshotInput.parse(args ?? {});
       return handleGetSessionSnapshot();
     })
   );
 
   server.registerTool(
-    "omniroute_db_health_check",
+    "myrouter_db_health_check",
     {
       description:
-        "Diagnoses or repairs OmniRoute database drift, including broken combo references and orphan quota/domain rows",
+        "Diagnoses or repairs MyRouter database drift, including broken combo references and orphan quota/domain rows",
       inputSchema: dbHealthCheckInput,
     },
-    withScopeEnforcement("omniroute_db_health_check", (args) =>
+    withScopeEnforcement("myrouter_db_health_check", (args) =>
       handleDbHealthCheck(dbHealthCheckInput.parse(args ?? {}))
     )
   );
 
   server.registerTool(
-    "omniroute_sync_pricing",
+    "myrouter_sync_pricing",
     {
       description:
-        "Syncs pricing data from external sources (LiteLLM) into OmniRoute without overwriting user-set prices",
+        "Syncs pricing data from external sources (LiteLLM) into MyRouter without overwriting user-set prices",
       inputSchema: syncPricingInput,
     },
-    withScopeEnforcement("omniroute_sync_pricing", (args) =>
+    withScopeEnforcement("myrouter_sync_pricing", (args) =>
       handleSyncPricing(syncPricingInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_web_search",
+    "myrouter_web_search",
     {
       description:
-        "Performs a web search using OmniRoute's search gateway. Supports multiple providers (Serper, Brave, Perplexity, Exa, Tavily) with automatic failover. Returns search results with titles, URLs, snippets, and position data.",
+        "Performs a web search using MyRouter's search gateway. Supports multiple providers (Serper, Brave, Perplexity, Exa, Tavily) with automatic failover. Returns search results with titles, URLs, snippets, and position data.",
       inputSchema: webSearchInput,
     },
-    withScopeEnforcement("omniroute_web_search", (args) =>
+    withScopeEnforcement("myrouter_web_search", (args) =>
       handleWebSearch(webSearchInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_web_fetch",
+    "myrouter_web_fetch",
     {
       description:
-        "Fetches and extracts content from a URL using OmniRoute's web fetch gateway. Supports multiple providers (Firecrawl, Jina Reader, Tavily) with automatic failover. Returns the page content as markdown, HTML, links, or screenshot, along with metadata.",
+        "Fetches and extracts content from a URL using MyRouter's web fetch gateway. Supports multiple providers (Firecrawl, Jina Reader, Tavily) with automatic failover. Returns the page content as markdown, HTML, links, or screenshot, along with metadata.",
       inputSchema: webFetchInput,
     },
-    withScopeEnforcement("omniroute_web_fetch", (args) => handleWebFetch(webFetchInput.parse(args)))
+    withScopeEnforcement("myrouter_web_fetch", (args) => handleWebFetch(webFetchInput.parse(args)))
   );
 
   server.registerTool(
-    "omniroute_cache_stats",
+    "myrouter_cache_stats",
     {
       description:
         "Returns cache statistics including semantic cache hit rate, prompt cache metrics by provider, and idempotency layer stats.",
       inputSchema: cacheStatsInput,
     },
-    withScopeEnforcement("omniroute_cache_stats", () => handleCacheStats())
+    withScopeEnforcement("myrouter_cache_stats", () => handleCacheStats())
   );
 
   server.registerTool(
-    "omniroute_cache_flush",
+    "myrouter_cache_flush",
     {
       description:
         "Flush cache entries. Provide signature to invalidate a single entry, model to invalidate all entries for a model, or omit both to clear all.",
       inputSchema: cacheFlushInput,
     },
-    withScopeEnforcement("omniroute_cache_flush", (args) =>
+    withScopeEnforcement("myrouter_cache_flush", (args) =>
       handleCacheFlush(cacheFlushInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_oneproxy_fetch",
+    "myrouter_oneproxy_fetch",
     {
       description:
         "Fetch free proxies from the 1proxy marketplace with optional filters for protocol, country, and quality. Returns validated proxies with quality scores.",
       inputSchema: oneproxyFetchInput,
     },
-    withScopeEnforcement("omniroute_oneproxy_fetch", (args) =>
+    withScopeEnforcement("myrouter_oneproxy_fetch", (args) =>
       handleOneproxyFetch(oneproxyFetchInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_oneproxy_rotate",
+    "myrouter_oneproxy_rotate",
     {
       description:
         "Get the next available free proxy from the 1proxy pool using the specified rotation strategy.",
       inputSchema: oneproxyRotateInput,
     },
-    withScopeEnforcement("omniroute_oneproxy_rotate", (args) =>
+    withScopeEnforcement("myrouter_oneproxy_rotate", (args) =>
       handleOneproxyRotate(oneproxyRotateInput.parse(args))
     )
   );
 
   server.registerTool(
-    "omniroute_oneproxy_stats",
+    "myrouter_oneproxy_stats",
     {
       description:
         "Returns 1proxy sync status and statistics: total proxies, average quality, sync history, and distribution by protocol and country.",
       inputSchema: oneproxyStatsInput,
     },
-    withScopeEnforcement("omniroute_oneproxy_stats", (args) =>
+    withScopeEnforcement("myrouter_oneproxy_stats", (args) =>
       handleOneproxyStats(oneproxyStatsInput.parse(args))
     )
   );
@@ -1363,7 +1363,7 @@ export function createMcpServer(): McpServer {
 
 /**
  * Start the MCP server with stdio transport.
- * Called when `omniroute --mcp` is used.
+ * Called when `myrouter --mcp` is used.
  */
 export async function startMcpStdio(): Promise<void> {
   const server = createMcpServer();
@@ -1382,10 +1382,10 @@ export async function startMcpStdio(): Promise<void> {
   process.once("SIGINT", stopHeartbeatOnce);
   process.once("SIGTERM", stopHeartbeatOnce);
 
-  console.error("[MCP] OmniRoute MCP Server starting (stdio transport)...");
+  console.error("[MCP] MyRouter MCP Server starting (stdio transport)...");
   try {
     await server.connect(transport);
-    console.error("[MCP] OmniRoute MCP Server connected and ready.");
+    console.error("[MCP] MyRouter MCP Server connected and ready.");
   } finally {
     if (closeAuditDb()) {
       console.error("[MCP] Audit database checkpointed and closed.");

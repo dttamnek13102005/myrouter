@@ -18,15 +18,15 @@ import { markServerStopping } from "@/lib/serverLifecycle";
 const SHUTDOWN_TIMEOUT_MS = parseInt(process.env.SHUTDOWN_TIMEOUT_MS || "30000", 10);
 
 declare global {
-  var __omnirouteShutdown:
+  var __myrouterShutdown:
     { init: boolean; shuttingDown: boolean; activeRequests: number } | undefined;
 }
 
 function getShutdownState() {
-  if (!globalThis.__omnirouteShutdown) {
-    globalThis.__omnirouteShutdown = { init: false, shuttingDown: false, activeRequests: 0 };
+  if (!globalThis.__myrouterShutdown) {
+    globalThis.__myrouterShutdown = { init: false, shuttingDown: false, activeRequests: 0 };
   }
-  return globalThis.__omnirouteShutdown;
+  return globalThis.__myrouterShutdown;
 }
 
 /**
@@ -99,7 +99,7 @@ async function cleanup(): Promise<void> {
   try {
     const [{ closeAuditDb }, { closeDbInstance }, { flushSpendBatchWriter }, { closeLogRotation }] =
       await Promise.all([
-        import("@omniroute/open-sse/mcp-server/audit.ts"),
+        import("@myrouter/open-sse/mcp-server/audit.ts"),
         import("@/lib/db/core"),
         import("@/lib/spend/batchWriter"),
         import("@/lib/logRotation"),

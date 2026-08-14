@@ -1,4 +1,4 @@
-// Memory system type definitions for OmniRoute
+// Memory system type definitions for MyRouter
 // These types support the memory management system for AI agents
 
 /**

@@ -1,20 +1,20 @@
 ---
-title: "CLI 工具 — OmniRoute"
+title: "CLI 工具 — MyRouter"
 version: 3.8.40
 lastUpdated: 2026-06-28
 ---
 
-# CLI 工具 — OmniRoute
+# CLI 工具 — MyRouter
 
 最后更新：2026-06-28
 
-OmniRoute 与三类 CLI 工具集成，分布在三个专用的 dashboard 页面中：
+MyRouter 与三类 CLI 工具集成，分布在三个专用的 dashboard 页面中：
 
 | 页面             | 路由                     | 概念                                                                        | 数量         |
 | ---------------- | ------------------------ | --------------------------------------------------------------------------- | ------------ |
-| **CLI Code's**   | `/dashboard/cli-code`    | 指向 OmniRoute 的编程工具（客户端 → CLI → OmniRoute → 服务商）               | 19           |
-| **CLI Agents**   | `/dashboard/cli-agents`  | 指向 OmniRoute 的自主代理（相同流程，更广泛的范围）                           | 6            |
-| **ACP Agents**   | `/dashboard/acp-agents`  | OmniRoute 通过 stdio/ACP 作为后端启动的 CLI（反向流程）                       | 见注册表      |
+| **CLI Code's**   | `/dashboard/cli-code`    | 指向 MyRouter 的编程工具（客户端 → CLI → MyRouter → 服务商）               | 19           |
+| **CLI Agents**   | `/dashboard/cli-agents`  | 指向 MyRouter 的自主代理（相同流程，更广泛的范围）                           | 6            |
+| **ACP Agents**   | `/dashboard/acp-agents`  | MyRouter 通过 stdio/ACP 作为后端启动的 CLI（反向流程）                       | 见注册表      |
 
 旧路由通过 308 重定向：`/dashboard/cli-tools` → `/dashboard/cli-code`，`/dashboard/agents` → `/dashboard/acp-agents`。
 
@@ -26,14 +26,14 @@ OmniRoute 与三类 CLI 工具集成，分布在三个专用的 dashboard 页面
 CLI Code's / CLI Agents（消费流程）：
 Claude / Codex / OpenCode / Cline / KiloCode / Continue / Hermes Agent / Goose / ...
            │
-           ▼  （全部指向 OmniRoute）
+           ▼  （全部指向 MyRouter）
     http://YOUR_SERVER:20128/v1
            │
-           ▼  （OmniRoute 路由到合适的服务商）
+           ▼  （MyRouter 路由到合适的服务商）
     Anthropic / OpenAI / Gemini / DeepSeek / Groq / Mistral / ...
 
 ACP Agents（反向启动流程）：
-    客户端请求 → OmniRoute → 通过 stdio/ACP 启动 CLI → 响应
+    客户端请求 → MyRouter → 通过 stdio/ACP 启动 CLI → 响应
 ```
 
 **优势：**
@@ -47,16 +47,16 @@ ACP Agents（反向启动流程）：
 
 ## 使用 `setup-*` 自动配置
 
-无需手动编写每个工具的配置。OmniRoute 为每个支持的 CLI 提供对应的 `setup-*` 命令，该命令从运行中的 OmniRoute（本地或远程）读取**实时**模型目录并将工具的配置写入你的机器：
+无需手动编写每个工具的配置。MyRouter 为每个支持的 CLI 提供对应的 `setup-*` 命令，该命令从运行中的 MyRouter（本地或远程）读取**实时**模型目录并将工具的配置写入你的机器：
 
 ```bash
-omniroute setup-codex        omniroute setup-claude       omniroute setup-opencode
-omniroute setup-cline        omniroute setup-kilo         omniroute setup-continue
-omniroute setup-cursor       omniroute setup-roo          omniroute setup-crush
-omniroute setup-goose        omniroute setup-qwen         omniroute setup-aider
+myrouter setup-codex        myrouter setup-claude       myrouter setup-opencode
+myrouter setup-cline        myrouter setup-kilo         myrouter setup-continue
+myrouter setup-cursor       myrouter setup-roo          myrouter setup-crush
+myrouter setup-goose        myrouter setup-qwen         myrouter setup-aider
 ```
 
-每个命令接受 `--remote <url> --api-key <key>`（针对远程 OmniRoute 配置本地工具）、`--dry-run`（预览不写入）和 `--port`。不支持模型自动发现的工具（Cline、Kilo、Roo、Goose、Qwen、Aider、Gemini）接受 `--model <id>`（以及用于非交互式运行的 `--yes`）。启动器 `omniroute launch`（Claude Code）和 `omniroute launch-codex`（Codex）在注入正确的环境变量后启动 CLI，不写入任何配置。
+每个命令接受 `--remote <url> --api-key <key>`（针对远程 MyRouter 配置本地工具）、`--dry-run`（预览不写入）和 `--port`。不支持模型自动发现的工具（Cline、Kilo、Roo、Goose、Qwen、Aider、Gemini）接受 `--model <id>`（以及用于非交互式运行的 `--yes`）。启动器 `myrouter launch`（Claude Code）和 `myrouter launch-codex`（Codex）在注入正确的环境变量后启动 CLI，不写入任何配置。
 
 > **完整参考：** 主表 — 每个命令写入的内容、所有标志、本地 vs 远程，以及哪些工具需要 `/v1` 后缀 — 在 **[CLI Integrations](../guides/CLI-INTEGRATIONS.md)** 中。
 
@@ -127,7 +127,7 @@ omniroute setup-goose        omniroute setup-qwen         omniroute setup-aider
 
 ## 3. ACP Agents（/dashboard/acp-agents）
 
-此页面（从 `/dashboard/agents` 重命名而来）显示 OmniRoute 可以通过 stdio/ACP 协议**启动**为后端执行引擎的 CLI。目录在 `src/lib/acp/registry.ts` 中单独维护，**不同于** `CLI_TOOLS`。
+此页面（从 `/dashboard/agents` 重命名而来）显示 MyRouter 可以通过 stdio/ACP 协议**启动**为后端执行引擎的 CLI。目录在 `src/lib/acp/registry.ts` 中单独维护，**不同于** `CLI_TOOLS`。
 
 ---
 
@@ -251,7 +251,7 @@ interface ToolBatchStatus {
 
 ## 9. 快速开始
 
-### 步骤 1 — 获取 OmniRoute API Key
+### 步骤 1 — 获取 MyRouter API Key
 
 1. 打开 `/dashboard/api-manager` → **创建 API Key**
 2. 为其命名（例如 `cli-tools`）并选择所有权限
@@ -312,13 +312,13 @@ cargo install smelt  # Rust 编写
 ### 步骤 4 — 设置全局环境变量
 
 ```bash
-# OmniRoute 通用端点
+# MyRouter 通用端点
 export OPENAI_BASE_URL="http://localhost:20128/v1"
-export OPENAI_API_KEY="sk-your-omniroute-key"
+export OPENAI_API_KEY="sk-your-myrouter-key"
 export ANTHROPIC_BASE_URL="http://localhost:20128"
-export ANTHROPIC_AUTH_TOKEN="sk-your-omniroute-key"
+export ANTHROPIC_AUTH_TOKEN="sk-your-myrouter-key"
 export GEMINI_BASE_URL="http://localhost:20128/v1"
-export GEMINI_API_KEY="sk-your-omniroute-key"
+export GEMINI_API_KEY="sk-your-myrouter-key"
 ```
 
 > 对于**远程服务器**，将 `localhost:20128` 替换为服务器的 IP 或域名，
@@ -336,7 +336,7 @@ mkdir -p ~/.claude && cat > ~/.claude/settings.json << EOF
 {
   "env": {
     "ANTHROPIC_BASE_URL": "http://localhost:20128",
-    "ANTHROPIC_AUTH_TOKEN": "sk-your-omniroute-key"
+    "ANTHROPIC_AUTH_TOKEN": "sk-your-myrouter-key"
   }
 }
 EOF
@@ -353,7 +353,7 @@ Claude Code 使用统一的 Anthropic 网关根路径。不要在这里添加 `/
 ```bash
 mkdir -p ~/.codex && cat > ~/.codex/config.yaml << EOF
 model: auto
-apiKey: sk-your-omniroute-key
+apiKey: sk-your-myrouter-key
 apiBaseUrl: http://localhost:20128/v1
 EOF
 ```
@@ -369,12 +369,12 @@ mkdir -p ~/.config/opencode && cat > ~/.config/opencode/opencode.json << EOF
 {
   "\$schema": "https://opencode.ai/config.json",
   "provider": {
-    "omniroute": {
+    "myrouter": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "OmniRoute",
+      "name": "MyRouter",
       "options": {
         "baseURL": "http://localhost:20128/v1",
-        "apiKey": "sk-your-omniroute-key"
+        "apiKey": "sk-your-myrouter-key"
       },
       "models": {
         "claude-sonnet-4-5": { "name": "claude-sonnet-4-5" },
@@ -389,7 +389,7 @@ EOF
 
 **测试：** `opencode`
 
-> 使用 `opencode run "your prompt" --model omniroute/claude-sonnet-4-5-thinking --variant high`
+> 使用 `opencode run "your prompt" --model myrouter/claude-sonnet-4-5-thinking --variant high`
 > 发送 thinking 变体。
 
 ---
@@ -403,7 +403,7 @@ mkdir -p ~/.cline/data && cat > ~/.cline/data/globalState.json << EOF
 {
   "apiProvider": "openai",
   "openAiBaseUrl": "http://localhost:20128/v1",
-  "openAiApiKey": "sk-your-omniroute-key"
+  "openAiApiKey": "sk-your-myrouter-key"
 }
 EOF
 ```
@@ -411,7 +411,7 @@ EOF
 **VS Code 模式：**
 Cline 扩展设置 → API Provider：`OpenAI Compatible` → Base URL：`http://localhost:20128/v1`
 
-或使用 OmniRoute dashboard → **CLI Tools → Cline → 应用配置**。
+或使用 MyRouter dashboard → **CLI Tools → Cline → 应用配置**。
 
 ---
 
@@ -420,7 +420,7 @@ Cline 扩展设置 → API Provider：`OpenAI Compatible` → Base URL：`http:/
 **CLI 模式：**
 
 ```bash
-kilocode --api-base http://localhost:20128/v1 --api-key sk-your-omniroute-key
+kilocode --api-base http://localhost:20128/v1 --api-key sk-your-myrouter-key
 ```
 
 **VS Code 设置：**
@@ -428,11 +428,11 @@ kilocode --api-base http://localhost:20128/v1 --api-key sk-your-omniroute-key
 ```json
 {
   "kilo-code.openAiBaseUrl": "http://localhost:20128/v1",
-  "kilo-code.apiKey": "sk-your-omniroute-key"
+  "kilo-code.apiKey": "sk-your-myrouter-key"
 }
 ```
 
-或使用 OmniRoute dashboard → **CLI Tools → KiloCode → 应用配置**。
+或使用 MyRouter dashboard → **CLI Tools → KiloCode → 应用配置**。
 
 ---
 
@@ -442,11 +442,11 @@ kilocode --api-base http://localhost:20128/v1 --api-key sk-your-omniroute-key
 
 ```yaml
 models:
-  - name: OmniRoute
+  - name: MyRouter
     provider: openai
     model: auto
     apiBase: http://localhost:20128/v1
-    apiKey: sk-your-omniroute-key
+    apiKey: sk-your-myrouter-key
     default: true
 ```
 
@@ -456,25 +456,25 @@ models:
 
 #### VS Code Insiders（`chatLanguageModels.json`）
 
-当 VS Code Insiders 配置了自定义端点模型，且你希望 OmniRoute 在不使用自定义请求头字段的情况下工作时使用。
+当 VS Code Insiders 配置了自定义端点模型，且你希望 MyRouter 在不使用自定义请求头字段的情况下工作时使用。
 
 **推荐位置：**
 
 - Linux：`~/.config/Code - Insiders/User/chatLanguageModels.json`
 - Windows：`%APPDATA%/Code - Insiders/User/chatLanguageModels.json`
 
-**使用 Token 化 OmniRoute 别名的示例：**
+**使用 Token 化 MyRouter 别名的示例：**
 
 ```json
 [
   {
     "vendor": "customendpoint",
     "id": "auto",
-    "name": "OmniRoute Auto",
+    "name": "MyRouter Auto",
     "family": "gpt-4",
     "version": "1.0.0",
-    "url": "http://localhost:20128/api/v1/vscode/sk-your-omniroute-key/chat/completions",
-    "modelsUrl": "http://localhost:20128/api/v1/vscode/sk-your-omniroute-key/models",
+    "url": "http://localhost:20128/api/v1/vscode/sk-your-myrouter-key/chat/completions",
+    "modelsUrl": "http://localhost:20128/api/v1/vscode/sk-your-myrouter-key/models",
     "requestFormat": "openai-chat-completions",
     "contextWindow": 256000,
     "maxOutputTokens": 32768,
@@ -487,7 +487,7 @@ models:
 
 **说明：**
 
-- 将 `sk-your-omniroute-key` 替换为在 OmniRoute 中创建的 API Key。
+- 将 `sk-your-myrouter-key` 替换为在 MyRouter 中创建的 API Key。
 - `url` 字段应指向 `/api/v1/vscode/{token}/chat/completions`。
 - `modelsUrl` 字段应指向 `/api/v1/vscode/{token}/models`。
 - 只要客户端支持自定义请求头，应优先使用正常的 `/v1` + Bearer 请求头流程。
@@ -501,12 +501,12 @@ models:
 # 登录你的 AWS/Kiro 账户：
 kiro-cli login
 
-# CLI 使用自己的认证 — Kiro CLI 本身不需要 OmniRoute 作为后端。
-# 将 kiro-cli 与 OmniRoute 配合用于其他工具。
+# CLI 使用自己的认证 — Kiro CLI 本身不需要 MyRouter 作为后端。
+# 将 kiro-cli 与 MyRouter 配合用于其他工具。
 kiro-cli status
 ```
 
-对于 **Kiro IDE** 桌面应用，使用 OmniRoute 通过 `/dashboard/cli-tools → Kiro` 暴露的 MITM 端点。
+对于 **Kiro IDE** 桌面应用，使用 MyRouter 通过 `/dashboard/cli-tools → Kiro` 暴露的 MITM 端点。
 
 ---
 
@@ -514,7 +514,7 @@ kiro-cli status
 
 Qwen Code 通过环境变量或 `settings.json` 支持 OpenAI 兼容的 API 端点。
 
-> Qwen OAuth 免费层已于 2026-04-15 停用。改为使用 OmniRoute 搭配
+> Qwen OAuth 免费层已于 2026-04-15 停用。改为使用 MyRouter 搭配
 > `bailian-coding-plan` / `alibaba` / `alibaba-cn` / `openrouter` / `anthropic` /
 > `gemini` 服务商。
 
@@ -522,7 +522,7 @@ Qwen Code 通过环境变量或 `settings.json` 支持 OpenAI 兼容的 API 端�
 
 ```bash
 mkdir -p ~/.qwen && cat > ~/.qwen/.env << EOF
-OPENAI_API_KEY="sk-your-omniroute-key"
+OPENAI_API_KEY="sk-your-myrouter-key"
 OPENAI_BASE_URL="http://localhost:20128/v1"
 OPENAI_MODEL="auto"
 EOF
@@ -536,7 +536,7 @@ EOF
   "security": {
     "auth": {
       "selectedType": "openai",
-      "apiKey": "sk-your-omniroute-key",
+      "apiKey": "sk-your-myrouter-key",
       "baseUrl": "http://localhost:20128/v1"
     }
   },
@@ -550,7 +550,7 @@ EOF
 
 ```bash
 OPENAI_BASE_URL="http://localhost:20128/v1" \
-OPENAI_API_KEY="sk-your-omniroute-key" \
+OPENAI_API_KEY="sk-your-myrouter-key" \
 OPENAI_MODEL="auto" \
 qwen
 ```
@@ -559,30 +559,30 @@ qwen
 
 ---
 
-## 10. OmniRoute 内置 CLI
+## 10. MyRouter 内置 CLI
 
-`omniroute` 二进制文件提供服务端生命周期、设置、诊断和服务商管理的命令。入口点：`bin/omniroute.mjs`。
+`myrouter` 二进制文件提供服务端生命周期、设置、诊断和服务商管理的命令。入口点：`bin/myrouter.mjs`。
 
 ```bash
-omniroute                              # 启动服务器（默认端口 20128）
-omniroute setup                        # 交互式设置向导
-omniroute doctor                       # 检查配置、数据库、端口、运行时
-omniroute providers list               # 已配置的服务商连接
-omniroute providers test-all           # 测试所有活跃连接
-omniroute reset-password               # 重置管理员密码
-omniroute logs                         # 流式输出请求日志
-omniroute health                       # 详细健康状态（熔断器、缓存、内存）
-omniroute --version                    # 输出版本号
-omniroute --help                       # 显示所有命令
+myrouter                              # 启动服务器（默认端口 20128）
+myrouter setup                        # 交互式设置向导
+myrouter doctor                       # 检查配置、数据库、端口、运行时
+myrouter providers list               # 已配置的服务商连接
+myrouter providers test-all           # 测试所有活跃连接
+myrouter reset-password               # 重置管理员密码
+myrouter logs                         # 流式输出请求日志
+myrouter health                       # 详细健康状态（熔断器、缓存、内存）
+myrouter --version                    # 输出版本号
+myrouter --help                       # 显示所有命令
 ```
 
 ### 设置与初始化
 
 ```bash
-omniroute setup                        # 交互式设置向导
-omniroute setup --non-interactive      # CI/自动化模式（读取环境变量 + 标志）
-omniroute setup --password '<value>'   # 直接设置管理员密码
-omniroute setup --add-provider \
+myrouter setup                        # 交互式设置向导
+myrouter setup --non-interactive      # CI/自动化模式（读取环境变量 + 标志）
+myrouter setup --password '<value>'   # 直接设置管理员密码
+myrouter setup --add-provider \
   --provider openai \
   --api-key '<value>' \
   --test-provider                      # 一步添加并测试服务商
@@ -592,21 +592,21 @@ omniroute setup --add-provider \
 
 | 变量                | 用途                                                        |
 | ------------------- | ----------------------------------------------------------- |
-| `OMNIROUTE_API_KEY` | 服务商 API Key（通过 Commander `.env()` 绑定到 `--api-key`） |
-| `DATA_DIR`          | 覆盖 OmniRoute 数据目录                                      |
+| `MYROUTER_API_KEY` | 服务商 API Key（通过 Commander `.env()` 绑定到 `--api-key`） |
+| `DATA_DIR`          | 覆盖 MyRouter 数据目录                                      |
 
 其他所有非交互式输入通过标志传入，而非环境变量：
 `--password`、`--provider`、`--provider-name`、`--provider-base-url`、`--default-model`
-（参见上述 `omniroute setup` 选项）。
+（参见上述 `myrouter setup` 选项）。
 
 ### 诊断
 
 ```bash
-omniroute doctor                       # 检查配置、数据库、端口、运行时、内存、存活状态
-omniroute doctor --json                # 机器可读的 JSON
-omniroute doctor --no-liveness         # 跳过 HTTP 健康探测
-omniroute doctor --host 0.0.0.0        # 覆盖存活探测的主机
-omniroute doctor --liveness-url <url>  # 完全覆盖健康端点 URL
+myrouter doctor                       # 检查配置、数据库、端口、运行时、内存、存活状态
+myrouter doctor --json                # 机器可读的 JSON
+myrouter doctor --no-liveness         # 跳过 HTTP 健康探测
+myrouter doctor --host 0.0.0.0        # 覆盖存活探测的主机
+myrouter doctor --liveness-url <url>  # 完全覆盖健康端点 URL
 ```
 
 doctor 运行以下检查：`Config`、`Database`、`Storage/encryption`、`Port availability`、`Node runtime`、`Native binary`（better-sqlite3）、`Memory` 和 `Server liveness`。任何检查为 `fail` 时以非零退出码退出。
@@ -614,62 +614,62 @@ doctor 运行以下检查：`Config`、`Database`、`Storage/encryption`、`Port
 ### 服务商管理
 
 ```bash
-omniroute providers available                       # OmniRoute 服务商目录
-omniroute providers available --search openai       # 按 id/name/alias/category 过滤目录
-omniroute providers available --category api-key    # 按分类过滤（api-key、oauth、free 等）
-omniroute providers available --json                # 机器可读的 JSON
+myrouter providers available                       # MyRouter 服务商目录
+myrouter providers available --search openai       # 按 id/name/alias/category 过滤目录
+myrouter providers available --category api-key    # 按分类过滤（api-key、oauth、free 等）
+myrouter providers available --json                # 机器可读的 JSON
 
-omniroute providers list                            # 已配置的服务商连接
-omniroute providers list --json
+myrouter providers list                            # 已配置的服务商连接
+myrouter providers list --json
 
-omniroute providers test <id|name>                  # 测试一个已配置的连接
-omniroute providers test-all                        # 测试所有活跃连接
-omniroute providers validate                        # 仅本地结构校验
+myrouter providers test <id|name>                  # 测试一个已配置的连接
+myrouter providers test-all                        # 测试所有活跃连接
+myrouter providers validate                        # 仅本地结构校验
 ```
 
-> `providers available` 读取 OmniRoute 目录；`providers list/test/test-all/validate`
+> `providers available` 读取 MyRouter 目录；`providers list/test/test-all/validate`
 > 直接读取本地 SQLite 数据库，不需要服务器运行。
 
 ### 恢复与重置
 
 ```bash
-omniroute reset-password                # 重置管理员密码（旧别名仍然可用）
-omniroute reset-encrypted-columns       # 显示加密凭证重置的警告 + 干运行
-omniroute reset-encrypted-columns --force  # 实际在 SQLite 中将加密凭证设为 null
+myrouter reset-password                # 重置管理员密码（旧别名仍然可用）
+myrouter reset-encrypted-columns       # 显示加密凭证重置的警告 + 干运行
+myrouter reset-encrypted-columns --force  # 实际在 SQLite 中将加密凭证设为 null
 ```
 
 ### 其他子命令
 
-以下命令假定 OmniRoute 服务器正在运行（另有说明除外）：
+以下命令假定 MyRouter 服务器正在运行（另有说明除外）：
 
 ```bash
-omniroute status                       # 全面的运行时状态
-omniroute logs                         # 流式输出请求日志（--json、--search、--follow）
-omniroute config show                  # 显示当前配置
+myrouter status                       # 全面的运行时状态
+myrouter logs                         # 流式输出请求日志（--json、--search、--follow）
+myrouter config show                  # 显示当前配置
 
-omniroute provider list                # 列出可用服务商（providers list 的别名）
-omniroute provider add                 # 将 OmniRoute 注册为某个工具的服务商
-omniroute keys add | list | remove     # 管理 API Key
-omniroute models [provider]            # 列出模型（--json、--search）
-omniroute combo list | switch | create | delete
+myrouter provider list                # 列出可用服务商（providers list 的别名）
+myrouter provider add                 # 将 MyRouter 注册为某个工具的服务商
+myrouter keys add | list | remove     # 管理 API Key
+myrouter models [provider]            # 列出模型（--json、--search）
+myrouter combo list | switch | create | delete
 
-omniroute backup                       # 快照配置 + 数据库
-omniroute restore                      # 从之前的快照恢复
+myrouter backup                       # 快照配置 + 数据库
+myrouter restore                      # 从之前的快照恢复
 
-omniroute health                       # 详细健康状态（熔断器、缓存、内存）
-omniroute quota                        # 服务商配额用量
-omniroute cache                        # 缓存状态
-omniroute cache clear                  # 清除语义 + 签名缓存
+myrouter health                       # 详细健康状态（熔断器、缓存、内存）
+myrouter quota                        # 服务商配额用量
+myrouter cache                        # 缓存状态
+myrouter cache clear                  # 清除语义 + 签名缓存
 
-omniroute mcp status | restart         # MCP 服务器状态 / 重启
-omniroute a2a status | card            # A2A 服务器状态 / agent card
+myrouter mcp status | restart         # MCP 服务器状态 / 重启
+myrouter a2a status | card            # A2A 服务器状态 / agent card
 
-omniroute tunnel list | create | stop  # 管理隧道（cloudflare/tailscale/ngrok）
-omniroute env show | get <k> | set <k> <v>  # 检查 / 设置环境变量（临时）
+myrouter tunnel list | create | stop  # 管理隧道（cloudflare/tailscale/ngrok）
+myrouter env show | get <k> | set <k> <v>  # 检查 / 设置环境变量（临时）
 
-omniroute test                         # 服务商连通性冒烟测试
-omniroute update                       # 检查更新
-omniroute completion                   # 生成 shell 补全
+myrouter test                         # 服务商连通性冒烟测试
+myrouter update                       # 检查更新
+myrouter completion                   # 生成 shell 补全
 ```
 
 ### 通用标志
@@ -698,7 +698,7 @@ omniroute completion                   # 生成 shell 补全
 | `/v1/audio/speech`           | 文本转语音                      | ElevenLabs、OpenAI TTS    |
 | `/v1/audio/transcriptions`   | 语音转文本                      | Deepgram、AssemblyAI      |
 
-可直接粘贴的示例（使用 Token 化 OmniRoute URL）：
+可直接粘贴的示例（使用 Token 化 MyRouter URL）：
 
 ```txt
 Token 示例：sk-a3ab3c080beaee3a-69f4a4-070d71af
@@ -717,7 +717,7 @@ Ollama 聊天：http://localhost:20128/api/v1/vscode/sk-a3ab3c080beaee3a-69f4a4-
 
 | 错误                                          | 原因                     | 修复方法                                          |
 | --------------------------------------------- | ------------------------ | ------------------------------------------------- |
-| `Connection refused`                          | OmniRoute 未运行          | `omniroute serve`                                 |
+| `Connection refused`                          | MyRouter 未运行          | `myrouter serve`                                 |
 | `401 Unauthorized`                            | API Key 错误             | 在 `/dashboard/api-manager` 中检查                 |
 | `No combo configured`                         | 无活跃的路由 Combo        | 在 `/dashboard/combos` 中设置                      |
 | CLI 显示 "not installed"                      | 二进制文件不在 PATH 中    | 检查 `which <command>`                            |

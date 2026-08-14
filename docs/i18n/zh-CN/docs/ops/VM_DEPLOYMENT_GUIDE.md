@@ -1,14 +1,14 @@
 ---
-title: "OmniRoute — 在虚拟机上通过 Cloudflare 部署指南"
+title: "MyRouter — 在虚拟机上通过 Cloudflare 部署指南"
 version: 3.8.40
 lastUpdated: 2026-06-28
 ---
 
-# OmniRoute — 在虚拟机上通过 Cloudflare 部署指南
+# MyRouter — 在虚拟机上通过 Cloudflare 部署指南
 
 🌐 **Languages:** 🇺🇸 [English](../../../ops/VM_DEPLOYMENT_GUIDE.md) | 🇧🇷 [Português (Brasil)](../../pt-BR/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇪🇸 [Español](../../es/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇫🇷 [Français](../../fr/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇹 [Italiano](../../it/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇷🇺 [Русский](../../ru/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇨🇳 [中文 (简体)](../../zh-CN/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇩🇪 [Deutsch](../../de/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇳 [हिन्दी](../../in/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇹🇭 [ไทย](../../th/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇺🇦 [Українська](../../uk-UA/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇸🇦 [العربية](../../ar/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇯🇵 [日本語](../../ja/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇻🇳 [Tiếng Việt](../../vi/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇧🇬 [Български](../../bg/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇩🇰 [Dansk](../../da/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇫🇮 [Suomi](../../fi/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇱 [עברית](../../he/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇭🇺 [Magyar](../../hu/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇮🇩 [Bahasa Indonesia](../../id/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇰🇷 [한국어](../../ko/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇲🇾 [Bahasa Melayu](../../ms/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇳🇱 [Nederlands](../../nl/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇳🇴 [Norsk](../../no/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇵🇹 [Português (Portugal)](../../pt/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇷🇴 [Română](../../ro/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇵🇱 [Polski](../../pl/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇸🇰 [Slovenčina](../../sk/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇸🇪 [Svenska](../../sv/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇵🇭 [Filipino](../../phi/docs/ops/VM_DEPLOYMENT_GUIDE.md) | 🇨🇿 [Čeština](../../cs/docs/ops/VM_DEPLOYMENT_GUIDE.md)
 
-在虚拟机 (VPS) 上安装并配置 OmniRoute 并通过 Cloudflare 管理域名的完整指南。
+在虚拟机 (VPS) 上安装并配置 MyRouter 并通过 Cloudflare 管理域名的完整指南。
 
 ---
 
@@ -86,18 +86,18 @@ ufw enable
 
 ---
 
-## 2. 安装 OmniRoute
+## 2. 安装 MyRouter
 
 ### 2.1 创建配置目录
 
 ```bash
-mkdir -p /opt/omniroute
+mkdir -p /opt/myrouter
 ```
 
 ### 2.2 创建环境变量文件
 
 ```bash
-cat > /opt/omniroute/.env << 'EOF'
+cat > /opt/myrouter/.env << 'EOF'
 # === 安全 ===
 JWT_SECRET=CHANGE-TO-A-UNIQUE-64-CHAR-SECRET-KEY
 INITIAL_PASSWORD=YourSecurePassword123!
@@ -105,7 +105,7 @@ API_KEY_SECRET=REPLACE-WITH-ANOTHER-SECRET-KEY
 STORAGE_ENCRYPTION_KEY=REPLACE-WITH-THIRD-SECRET-KEY
 STORAGE_ENCRYPTION_KEY_VERSION=v1
 MACHINE_ID_SALT=CHANGE-TO-A-UNIQUE-SALT
-OMNIROUTE_WS_BRIDGE_SECRET=REPLACE-WITH-WS-BRIDGE-SECRET  # 生产环境必需：Codex Responses WS 桥接使用
+MYROUTER_WS_BRIDGE_SECRET=REPLACE-WITH-WS-BRIDGE-SECRET  # 生产环境必需：Codex Responses WS 桥接使用
 
 # === 应用 ===
 PORT=20128
@@ -122,11 +122,11 @@ BASE_URL=http://127.0.0.1:20128
 # OAuth 回调、控制台链接及同源校验所面向浏览器的 URL。
 NEXT_PUBLIC_BASE_URL=https://llms.seudominio.com
 # 可选：显式覆盖生成的公开资源 URL。
-# OMNIROUTE_PUBLIC_BASE_URL=https://llms.seudominio.com
+# MYROUTER_PUBLIC_BASE_URL=https://llms.seudominio.com
 
 # === 云端同步（可选）===
-# CLOUD_URL=https://cloud.omniroute.online
-# NEXT_PUBLIC_CLOUD_URL=https://cloud.omniroute.online
+# CLOUD_URL=https://cloud.myrouter.online
+# NEXT_PUBLIC_CLOUD_URL=https://cloud.myrouter.online
 EOF
 ```
 
@@ -135,22 +135,22 @@ EOF
 ### 2.3 启动容器
 
 ```bash
-docker pull diegosouzapw/omniroute:latest
+docker pull diegosouzapw/myrouter:latest
 
 docker run -d \
-  --name omniroute \
+  --name myrouter \
   --restart unless-stopped \
-  --env-file /opt/omniroute/.env \
+  --env-file /opt/myrouter/.env \
   -p 20128:20128 \
-  -v omniroute-data:/app/data \
-  diegosouzapw/omniroute:latest
+  -v myrouter-data:/app/data \
+  diegosouzapw/myrouter:latest
 ```
 
 ### 2.4 验证运行状态
 
 ```bash
-docker ps | grep omniroute
-docker logs omniroute --tail 20
+docker ps | grep myrouter
+docker logs myrouter --tail 20
 ```
 
 应显示：`[DB] SQLite database ready` 和 `listening on port 20128`。
@@ -183,7 +183,7 @@ chmod 600 /etc/nginx/ssl/origin.key
 ### 3.2 nginx 配置
 
 ```bash
-cat > /etc/nginx/sites-available/omniroute << 'NGINX'
+cat > /etc/nginx/sites-available/myrouter << 'NGINX'
 # 默认 server — 阻止通过 IP 的直接访问
 server {
     listen 80 default_server;
@@ -196,7 +196,7 @@ server {
     return 444;
 }
 
-# OmniRoute — HTTPS
+# MyRouter — HTTPS
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
@@ -239,9 +239,9 @@ server {
 NGINX
 ```
 
-请确保反向代理的流超时与 OmniRoute 超时环境变量保持一致。如果提高了 `FETCH_TIMEOUT_MS` / `STREAM_IDLE_TIMEOUT_MS`，则将 `proxy_read_timeout` / `proxy_send_timeout` 同步提高到同一阈值以上。
+请确保反向代理的流超时与 MyRouter 超时环境变量保持一致。如果提高了 `FETCH_TIMEOUT_MS` / `STREAM_IDLE_TIMEOUT_MS`，则将 `proxy_read_timeout` / `proxy_send_timeout` 同步提高到同一阈值以上。
 
-OmniRoute 使用 `NEXT_PUBLIC_BASE_URL` 作为 OAuth、公开链接及控制台变更域名校验的正规浏览器来源。上述 `X-Forwarded-*` 标头仍然是有效的路由元数据，但不能替代设置显式公开 URL。仅在 OmniRoute 客户端无法直接访问且你的代理剥离/重建了传入转发标头时，才启用 `OMNIROUTE_TRUST_PROXY`。
+MyRouter 使用 `NEXT_PUBLIC_BASE_URL` 作为 OAuth、公开链接及控制台变更域名校验的正规浏览器来源。上述 `X-Forwarded-*` 标头仍然是有效的路由元数据，但不能替代设置显式公开 URL。仅在 MyRouter 客户端无法直接访问且你的代理剥离/重建了传入转发标头时，才启用 `MYROUTER_TRUST_PROXY`。
 
 ### 3.3 启用并测试
 
@@ -249,8 +249,8 @@ OmniRoute 使用 `NEXT_PUBLIC_BASE_URL` 作为 OAuth、公开链接及控制台�
 # 删除默认配置
 rm -f /etc/nginx/sites-enabled/default
 
-# 启用 OmniRoute
-ln -sf /etc/nginx/sites-available/omniroute /etc/nginx/sites-enabled/omniroute
+# 启用 MyRouter
+ln -sf /etc/nginx/sites-available/myrouter /etc/nginx/sites-enabled/myrouter
 
 # 测试并重载
 nginx -t && systemctl reload nginx
@@ -294,40 +294,40 @@ curl -sI https://llms.seudominio.com/health
 ### 升级到新版本
 
 ```bash
-docker pull diegosouzapw/omniroute:latest
-docker stop omniroute && docker rm omniroute
-docker run -d --name omniroute --restart unless-stopped \
-  --env-file /opt/omniroute/.env \
+docker pull diegosouzapw/myrouter:latest
+docker stop myrouter && docker rm myrouter
+docker run -d --name myrouter --restart unless-stopped \
+  --env-file /opt/myrouter/.env \
   -p 20128:20128 \
-  -v omniroute-data:/app/data \
-  diegosouzapw/omniroute:latest
+  -v myrouter-data:/app/data \
+  diegosouzapw/myrouter:latest
 ```
 
 ### 查看日志
 
 ```bash
-docker logs -f omniroute          # 实时流
-docker logs omniroute --tail 50   # 最近 50 行
+docker logs -f myrouter          # 实时流
+docker logs myrouter --tail 50   # 最近 50 行
 ```
 
 ### 手动数据库备份
 
 ```bash
 # 从卷复制数据到宿主机
-docker cp omniroute:/app/data ./backup-$(date +%F)
+docker cp myrouter:/app/data ./backup-$(date +%F)
 
 # 或压缩整个卷
-docker run --rm -v omniroute-data:/data -v $(pwd):/backup \
-  alpine tar czf /backup/omniroute-data-$(date +%F).tar.gz /data
+docker run --rm -v myrouter-data:/data -v $(pwd):/backup \
+  alpine tar czf /backup/myrouter-data-$(date +%F).tar.gz /data
 ```
 
 ### 从备份恢复
 
 ```bash
-docker stop omniroute
-docker run --rm -v omniroute-data:/data -v $(pwd):/backup \
-  alpine sh -c "rm -rf /data/* && tar xzf /backup/omniroute-data-YYYY-MM-DD.tar.gz -C /"
-docker start omniroute
+docker stop myrouter
+docker run --rm -v myrouter-data:/data -v $(pwd):/backup \
+  alpine sh -c "rm -rf /data/* && tar xzf /backup/myrouter-data-YYYY-MM-DD.tar.gz -C /"
+docker start myrouter
 ```
 
 ---
@@ -396,13 +396,13 @@ netfilter-persistent save
 
 ```bash
 # 在本地仓库中
-cd omnirouteCloud
+cd myrouterCloud
 npm install
 npx wrangler login
 npx wrangler deploy
 ```
 
-另请参阅 [TUNNELS_GUIDE.md](./TUNNELS_GUIDE.md) 了解仓库内的 Cloudflare 隧道操作指南。独立的 `omnirouteCloud/` worker 位于单独的配套仓库中。
+另请参阅 [TUNNELS_GUIDE.md](./TUNNELS_GUIDE.md) 了解仓库内的 Cloudflare 隧道操作指南。独立的 `myrouterCloud/` worker 位于单独的配套仓库中。
 
 ---
 
@@ -413,4 +413,4 @@ npx wrangler deploy
 | 22     | SSH           | 公开（配合 fail2ban）        |
 | 80     | nginx HTTP    | 跳转 → HTTPS                 |
 | 443    | nginx HTTPS   | 通过 Cloudflare 代理         |
-| 20128  | OmniRoute      | 仅本地（通过 nginx）         |
+| 20128  | MyRouter      | 仅本地（通过 nginx）         |

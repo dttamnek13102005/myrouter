@@ -341,7 +341,7 @@ export default function ClaudeToolCard({
                 <div className="flex items-center gap-2">
                   {/*
                     Always surface Manual Config even when the CLI is not
-                    detected locally — typical of remote OmniRoute
+                    detected locally — typical of remote MyRouter
                     deployments where the CLI lives on the user's machine,
                     not on the server. Upstream report: #589.
                   */}
@@ -524,7 +524,7 @@ export default function ClaudeToolCard({
                   variant="outline"
                   size="sm"
                   onClick={handleResetSettings}
-                  disabled={!claudeStatus?.hasOmniRoute}
+                  disabled={!claudeStatus?.hasMyRouter}
                   loading={restoring}
                 >
                   <span className="material-symbols-outlined text-[14px] mr-1">restore</span>

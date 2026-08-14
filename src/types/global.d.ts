@@ -1,5 +1,5 @@
 /**
- * Global Type Declarations for OmniRoute
+ * Global Type Declarations for MyRouter
  *
  * Ambient declarations for modules and globals that don't ship their own types.
  */
@@ -21,12 +21,12 @@ declare namespace NodeJS {
     PORT?: string;
     API_HOST?: string;
     DASHBOARD_PORT?: string;
-    OMNIROUTE_PUBLIC_BASE_URL?: string;
-    OMNIROUTE_CGPT_WEB_IMAGE_TIMEOUT_MS?: string;
-    OMNIROUTE_CGPT_WEB_IMAGE_CACHE_MAX_MB?: string;
-    OMNIROUTE_BASE_URL?: string;
-    OMNIROUTE_DISABLE_BACKGROUND_SERVICES?: string;
-    OMNIROUTE_PORT?: string;
+    MYROUTER_PUBLIC_BASE_URL?: string;
+    MYROUTER_CGPT_WEB_IMAGE_TIMEOUT_MS?: string;
+    MYROUTER_CGPT_WEB_IMAGE_CACHE_MAX_MB?: string;
+    MYROUTER_BASE_URL?: string;
+    MYROUTER_DISABLE_BACKGROUND_SERVICES?: string;
+    MYROUTER_PORT?: string;
     PRICING_SYNC_ENABLED?: string;
     NODE_ENV?: "development" | "production" | "test";
   }

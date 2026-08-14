@@ -1177,8 +1177,8 @@ export async function handleComboChat({
           // Success — validate response quality before returning
           if (result.ok) {
             const selectedConnectionId =
-              result.headers?.get("X-OmniRoute-Selected-Connection-Id") ||
-              result.headers?.get("x-omniroute-selected-connection-id") ||
+              result.headers?.get("X-MyRouter-Selected-Connection-Id") ||
+              result.headers?.get("x-myrouter-selected-connection-id") ||
               undefined;
             const effectiveConnectionId = selectedConnectionId || target.connectionId || "";
 
@@ -1622,8 +1622,8 @@ export async function handleComboChat({
           // to the exponential-backoff / synthetic-default paths).
           const lockoutHintVerified = lockoutHintMs > 0;
           const selectedConnectionId =
-            result.headers?.get("X-OmniRoute-Selected-Connection-Id") ||
-            result.headers?.get("x-omniroute-selected-connection-id") ||
+            result.headers?.get("X-MyRouter-Selected-Connection-Id") ||
+            result.headers?.get("x-myrouter-selected-connection-id") ||
             undefined;
           const targetWithConnection = selectedConnectionId
             ? { ...target, connectionId: selectedConnectionId }
@@ -2593,8 +2593,8 @@ async function handleRoundRobinCombo({
             // so release the sticky pin here rather than on the next turn.
             {
               const rrSelectedConnectionId =
-                result.headers?.get("X-OmniRoute-Selected-Connection-Id") ||
-                result.headers?.get("x-omniroute-selected-connection-id") ||
+                result.headers?.get("X-MyRouter-Selected-Connection-Id") ||
+                result.headers?.get("x-myrouter-selected-connection-id") ||
                 undefined;
               releaseStickyPinOnFailure(
                 _rrSessionSticky.messageHash,
@@ -2631,8 +2631,8 @@ async function handleRoundRobinCombo({
           recordedAttempts++;
 
           const selectedConnectionId =
-            result.headers?.get("X-OmniRoute-Selected-Connection-Id") ||
-            result.headers?.get("x-omniroute-selected-connection-id") ||
+            result.headers?.get("X-MyRouter-Selected-Connection-Id") ||
+            result.headers?.get("x-myrouter-selected-connection-id") ||
             undefined;
           const effectiveConnectionId = selectedConnectionId || target.connectionId || "";
 
@@ -2796,8 +2796,8 @@ async function handleRoundRobinCombo({
         );
         const { cooldownMs } = fallbackResult;
         const selectedConnectionId =
-          result.headers?.get("X-OmniRoute-Selected-Connection-Id") ||
-          result.headers?.get("x-omniroute-selected-connection-id") ||
+          result.headers?.get("X-MyRouter-Selected-Connection-Id") ||
+          result.headers?.get("x-myrouter-selected-connection-id") ||
           undefined;
         const targetWithConnection = selectedConnectionId
           ? { ...target, connectionId: selectedConnectionId }

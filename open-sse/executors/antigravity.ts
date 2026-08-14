@@ -378,7 +378,7 @@ function sanitizeAntigravityGeminiRequest(
   }
 
   // Preserve only caller-supplied safetySettings through the Claude-path whitelist.
-  // Missing settings stay absent so OmniRoute does not silently weaken upstream safety.
+  // Missing settings stay absent so MyRouter does not silently weaken upstream safety.
   if (Array.isArray(request.safetySettings)) {
     clean.safetySettings = request.safetySettings;
   }
@@ -508,7 +508,7 @@ export class AntigravityExecutor extends BaseExecutor {
   ): Promise<AntigravityRequestEnvelope | Response> {
     // Project ID resolution: prefer OAuth-stored projectId over incoming body.project
     // to avoid stale/wrong client-side values causing 404/403 from Cloud Code endpoints.
-    // Opt-in escape hatch: set OMNIROUTER_ALLOW_BODY_PROJECT_OVERRIDE=1.
+    // Opt-in escape hatch: set MYROUTER_ALLOW_BODY_PROJECT_OVERRIDE=1.
     const normalizeProjectId = (value: unknown): string | null => {
       if (typeof value !== "string") return null;
       const trimmedValue = value.trim();
@@ -520,11 +520,11 @@ export class AntigravityExecutor extends BaseExecutor {
     const providerSpecificProjectId = normalizeProjectId(
       (credentials?.providerSpecificData as Record<string, unknown> | undefined)?.projectId
     );
-    const allowBodyProjectOverride = process.env.OMNIROUTE_ALLOW_BODY_PROJECT_OVERRIDE === "1";
+    const allowBodyProjectOverride = process.env.MYROUTER_ALLOW_BODY_PROJECT_OVERRIDE === "1";
 
     // Default: prefer OAuth-stored projectId over incoming body.project to avoid
     // stale/wrong client-side values causing 404/403 from Cloud Code endpoints.
-    // Opt-in escape hatch: set OMNIROUTE_ALLOW_BODY_PROJECT_OVERRIDE=1.
+    // Opt-in escape hatch: set MYROUTER_ALLOW_BODY_PROJECT_OVERRIDE=1.
     let projectId =
       allowBodyProjectOverride && bodyProjectId
         ? bodyProjectId

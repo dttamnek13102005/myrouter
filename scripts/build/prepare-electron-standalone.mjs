@@ -25,7 +25,7 @@ function resolveStandaloneBundleDir() {
   }
 
   const nestedCandidates = [
-    join(STANDALONE_DIR, "projects", "OmniRoute"),
+    join(STANDALONE_DIR, "projects", "MyRouter"),
     join(STANDALONE_DIR, basename(ROOT)),
   ];
 

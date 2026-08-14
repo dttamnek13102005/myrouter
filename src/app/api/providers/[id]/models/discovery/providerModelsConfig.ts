@@ -1,26 +1,26 @@
-import { getAntigravityModelsDiscoveryUrls } from "@omniroute/open-sse/config/antigravityUpstream.ts";
+import { getAntigravityModelsDiscoveryUrls } from "@myrouter/open-sse/config/antigravityUpstream.ts";
 import {
   GROK_BUILD_DEFAULT_CONTEXT_WINDOW,
   getGrokBuildModelsHeaders,
   GROK_BUILD_MODELS_URL,
-} from "@omniroute/open-sse/config/grokBuild.ts";
-import { getAntigravityContentHeaders } from "@omniroute/open-sse/services/antigravityHeaders.ts";
+} from "@myrouter/open-sse/config/grokBuild.ts";
+import { getAntigravityContentHeaders } from "@myrouter/open-sse/services/antigravityHeaders.ts";
 import { parseGeminiModelsList } from "@/lib/providerModels/geminiModelsParser";
 import {
   CLINE_MODELS_ENDPOINT,
   CLINEPASS_MODELS_ENDPOINT,
   parseClineModels,
   parseClinepassRecommendedModels,
-} from "@omniroute/open-sse/services/clinepassModels.ts";
-import { buildClaudeCodeCompatibleHeaders } from "@omniroute/open-sse/services/claudeCodeCompatible.ts";
+} from "@myrouter/open-sse/services/clinepassModels.ts";
+import { buildClaudeCodeCompatibleHeaders } from "@myrouter/open-sse/services/claudeCodeCompatible.ts";
 import {
   buildKimiCodeIdentityHeaders,
   getKimiCodeCliUserAgent,
   KIMI_CODING_MODELS_URL,
-} from "@omniroute/open-sse/config/providers/registry/kimi/coding/runtime.ts";
-import { ALIBABA_MODEL_STUDIO_MODELS } from "@omniroute/open-sse/config/providers/registry/alibaba/index.ts";
-import { QWEN_CLOUD_TEXT_MODELS } from "@omniroute/open-sse/config/providers/registry/qwen-cloud/index.ts";
-import { extractZaiToken } from "@omniroute/open-sse/executors/zai-web.ts";
+} from "@myrouter/open-sse/config/providers/registry/kimi/coding/runtime.ts";
+import { ALIBABA_MODEL_STUDIO_MODELS } from "@myrouter/open-sse/config/providers/registry/alibaba/index.ts";
+import { QWEN_CLOUD_TEXT_MODELS } from "@myrouter/open-sse/config/providers/registry/qwen-cloud/index.ts";
+import { extractZaiToken } from "@myrouter/open-sse/executors/zai-web.ts";
 import { normalizeOpenAiLikeModelsResponse } from "./normalizers";
 
 const DASHSCOPE_TEXT_MODEL_PREFIXES = [

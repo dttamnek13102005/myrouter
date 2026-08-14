@@ -2,13 +2,13 @@
 
 import fs from "fs/promises";
 import { getCliPrimaryConfigPath } from "@/shared/services/cliRuntime";
-import { hasOmniRouteQwenCodeConfig } from "@/shared/services/qwenCodeConfig";
+import { hasMyRouterQwenCodeConfig } from "@/shared/services/qwenCodeConfig";
 import { getRuntimePorts } from "@/lib/runtime/ports";
 
 const { apiPort } = getRuntimePorts();
 
 /**
- * Check if a tool has OmniRoute configured by reading its config file directly.
+ * Check if a tool has MyRouter configured by reading its config file directly.
  * This replaces the expensive self-referential HTTP calls to /api/cli-tools/*-settings.
  *
  * @param toolId - CLI tool identifier (e.g. "claude", "codex", "cline")
@@ -29,11 +29,11 @@ export async function checkToolConfigStatus(
     // Codex uses TOML config — parse as raw text, not JSON
     if (toolId === "codex") {
       const lower = content.toLowerCase();
-      const hasOmniRoute =
-        lower.includes("omniroute") ||
+      const hasMyRouter =
+        lower.includes("myrouter") ||
         lower.includes(`localhost:${apiPort}`) ||
         lower.includes(`127.0.0.1:${apiPort}`);
-      if (!hasOmniRoute) return "not_configured";
+      if (!hasMyRouter) return "not_configured";
 
       // Also verify auth.json has an API key (not masked/empty)
       try {
@@ -53,32 +53,32 @@ export async function checkToolConfigStatus(
 
     if (toolId === "hermes") {
       const lower = content.toLowerCase();
-      const hasOmniRoute =
-        lower.includes("omniroute") ||
+      const hasMyRouter =
+        lower.includes("myrouter") ||
         lower.includes(`localhost:${apiPort}`) ||
         lower.includes(`127.0.0.1:${apiPort}`);
-      return hasOmniRoute ? "configured" : "not_configured";
+      return hasMyRouter ? "configured" : "not_configured";
     }
 
     const config = JSON.parse(content) as Record<string, unknown>;
 
-    // Each tool stores OmniRoute config differently
+    // Each tool stores MyRouter config differently
     switch (toolId) {
       case "claude":
         return (config?.env as Record<string, unknown>)?.ANTHROPIC_BASE_URL
           ? "configured"
           : "not_configured";
       case "qwen":
-        return hasOmniRouteQwenCodeConfig(config) ? "configured" : "not_configured";
+        return hasMyRouterQwenCodeConfig(config) ? "configured" : "not_configured";
       case "droid":
       case "openclaw":
       case "cline":
       case "kilo": {
-        // Generic check: look for OmniRoute-specific markers in the config
+        // Generic check: look for MyRouter-specific markers in the config
         const configStr = JSON.stringify(config).toLowerCase();
         if (
-          configStr.includes("omniroute") ||
-          configStr.includes("sk_omniroute") ||
+          configStr.includes("myrouter") ||
+          configStr.includes("sk_myrouter") ||
           configStr.includes(`localhost:${apiPort}`) ||
           configStr.includes(`127.0.0.1:${apiPort}`)
         ) {

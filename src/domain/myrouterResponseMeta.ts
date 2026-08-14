@@ -1,5 +1,5 @@
 import { getProviderAlias } from "@/shared/constants/providers";
-import { OMNIROUTE_RESPONSE_HEADERS } from "@/shared/constants/headers";
+import { MYROUTER_RESPONSE_HEADERS } from "@/shared/constants/headers";
 import { APP_CONFIG } from "@/shared/constants/appConfig";
 
 type UsageLike = Record<string, unknown> | null | undefined;
@@ -51,7 +51,7 @@ function toHeaderValue(value: string): string {
   return encodeURIComponent(toWellFormedUnicode(withoutControls));
 }
 
-export function getOmniRouteTokenCounts(usage: UsageLike): { input: number; output: number } {
+export function getMyRouterTokenCounts(usage: UsageLike): { input: number; output: number } {
   if (!usage || typeof usage !== "object") {
     return { input: 0, output: 0 };
   }
@@ -74,24 +74,24 @@ export function getOmniRouteTokenCounts(usage: UsageLike): { input: number; outp
   };
 }
 
-export function formatOmniRouteCost(costUsd: unknown): string {
+export function formatMyRouterCost(costUsd: unknown): string {
   const normalized = toFiniteNumber(costUsd);
   return normalized > 0 ? normalized.toFixed(10) : "0.0000000000";
 }
 
 /**
- * Build the `X-OmniRoute-Decision` composite header value: `strategy=<name>;
+ * Build the `X-MyRouter-Decision` composite header value: `strategy=<name>;
  * provider=<alias>; latency_ms=<n>`. Returns `null` when both `strategy` and
  * `provider` are absent/blank (mirrors the per-field guard pattern used for the
  * other optional headers). Reuses `getProviderAlias()` for the provider segment
- * (same alias normalization the `X-OmniRoute-Provider` header already applies)
+ * (same alias normalization the `X-MyRouter-Provider` header already applies)
  * and `toNonNegativeInteger()` for latency. The whole formatted string is passed
  * through `toHeaderValue()` before returning, so a strategy/provider id
  * containing control chars cannot corrupt the header line (Hard Rule #12 — this
  * header only ever carries a routing strategy name, the already-public provider
  * alias, and a latency integer; never an error message, stack trace, or secret).
  */
-export function buildOmniRouteDecisionHeaderValue({
+export function buildMyRouterDecisionHeaderValue({
   strategy = null,
   provider = null,
   latencyMs = 0,
@@ -112,7 +112,7 @@ export function buildOmniRouteDecisionHeaderValue({
   return toHeaderValue(parts.join("; "));
 }
 
-export function buildOmniRouteResponseMetaHeaders({
+export function buildMyRouterResponseMetaHeaders({
   cacheHit = false,
   costUsd = 0,
   costSavedUsd = undefined,
@@ -130,7 +130,7 @@ export function buildOmniRouteResponseMetaHeaders({
    * Cost the cache AVOIDED. A semantic-cache HIT serves at ≈0 incremental cost
    * (`costUsd: 0`) but saved the original call's cost — surface it here so billing
    * consumers don't charge for hits while analytics can still see what was saved.
-   * Emitted as `X-OmniRoute-Cost-Saved` only when provided (omitted on normal
+   * Emitted as `X-MyRouter-Cost-Saved` only when provided (omitted on normal
    * responses); pass `0` to explicitly mark a free-model HIT that saved nothing.
    */
   costSavedUsd?: unknown;
@@ -141,58 +141,58 @@ export function buildOmniRouteResponseMetaHeaders({
   requestId?: string | null;
   /**
    * Routing decision (combo strategy name, or `"single"` for a non-combo
-   * request) surfaced via `X-OmniRoute-Decision`. See #6022.
+   * request) surfaced via `X-MyRouter-Decision`. See #6022.
    */
   strategy?: string | null;
   usage?: UsageLike;
 }): Record<string, string> {
-  const tokens = getOmniRouteTokenCounts(usage);
+  const tokens = getMyRouterTokenCounts(usage);
   const headers: Record<string, string> = {
-    [OMNIROUTE_RESPONSE_HEADERS.cacheHit]: toHeaderValue(String(cacheHit)),
-    [OMNIROUTE_RESPONSE_HEADERS.latencyMs]: toHeaderValue(String(toNonNegativeInteger(latencyMs))),
-    [OMNIROUTE_RESPONSE_HEADERS.responseCost]: toHeaderValue(formatOmniRouteCost(costUsd)),
-    [OMNIROUTE_RESPONSE_HEADERS.tokensIn]: toHeaderValue(String(tokens.input)),
-    [OMNIROUTE_RESPONSE_HEADERS.tokensOut]: toHeaderValue(String(tokens.output)),
-    [OMNIROUTE_RESPONSE_HEADERS.version]: toHeaderValue(APP_CONFIG.version),
+    [MYROUTER_RESPONSE_HEADERS.cacheHit]: toHeaderValue(String(cacheHit)),
+    [MYROUTER_RESPONSE_HEADERS.latencyMs]: toHeaderValue(String(toNonNegativeInteger(latencyMs))),
+    [MYROUTER_RESPONSE_HEADERS.responseCost]: toHeaderValue(formatMyRouterCost(costUsd)),
+    [MYROUTER_RESPONSE_HEADERS.tokensIn]: toHeaderValue(String(tokens.input)),
+    [MYROUTER_RESPONSE_HEADERS.tokensOut]: toHeaderValue(String(tokens.output)),
+    [MYROUTER_RESPONSE_HEADERS.version]: toHeaderValue(APP_CONFIG.version),
   };
 
   if (typeof model === "string" && model.trim().length > 0) {
-    headers[OMNIROUTE_RESPONSE_HEADERS.model] = toHeaderValue(model);
+    headers[MYROUTER_RESPONSE_HEADERS.model] = toHeaderValue(model);
   }
 
   if (typeof requestId === "string" && requestId.trim().length > 0) {
-    headers[OMNIROUTE_RESPONSE_HEADERS.requestId] = toHeaderValue(requestId);
+    headers[MYROUTER_RESPONSE_HEADERS.requestId] = toHeaderValue(requestId);
   }
 
   if (typeof provider === "string" && provider.trim().length > 0) {
-    headers[OMNIROUTE_RESPONSE_HEADERS.provider] = toHeaderValue(getProviderAlias(provider));
+    headers[MYROUTER_RESPONSE_HEADERS.provider] = toHeaderValue(getProviderAlias(provider));
   }
 
   // Cache-saved cost: emitted only when the caller passes a value (cache HITs), so
   // non-cache responses keep their existing header shape. `0` is a valid saved cost.
   if (costSavedUsd != null) {
-    headers[OMNIROUTE_RESPONSE_HEADERS.costSaved] = toHeaderValue(
-      formatOmniRouteCost(costSavedUsd)
+    headers[MYROUTER_RESPONSE_HEADERS.costSaved] = toHeaderValue(
+      formatMyRouterCost(costSavedUsd)
     );
   }
 
   const attempts = toNonNegativeInteger(fallbackAttempts);
   if (attempts > 0) {
-    headers[OMNIROUTE_RESPONSE_HEADERS.fallbackAttempts] = toHeaderValue(String(attempts));
+    headers[MYROUTER_RESPONSE_HEADERS.fallbackAttempts] = toHeaderValue(String(attempts));
   }
 
-  const decisionValue = buildOmniRouteDecisionHeaderValue({ strategy, provider, latencyMs });
+  const decisionValue = buildMyRouterDecisionHeaderValue({ strategy, provider, latencyMs });
   if (decisionValue !== null) {
-    headers[OMNIROUTE_RESPONSE_HEADERS.decision] = decisionValue;
+    headers[MYROUTER_RESPONSE_HEADERS.decision] = decisionValue;
   }
 
   return headers;
 }
 
-export function buildOmniRouteSseMetadataComment(
-  options: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+export function buildMyRouterSseMetadataComment(
+  options: Parameters<typeof buildMyRouterResponseMetaHeaders>[0]
 ): string {
-  const headers = buildOmniRouteResponseMetaHeaders(options);
+  const headers = buildMyRouterResponseMetaHeaders(options);
   const lines = Object.entries(headers)
     .filter(([, value]) => typeof value === "string" && value.trim().length > 0)
     .map(([name, value]) => `: ${name.toLowerCase()}=${value}`);
@@ -201,15 +201,15 @@ export function buildOmniRouteSseMetadataComment(
 }
 
 /**
- * Single choke-point for attaching the X-OmniRoute-* response meta headers.
+ * Single choke-point for attaching the X-MyRouter-* response meta headers.
  * Mutates `headers` in place (accepts a Headers instance OR a plain Record).
  * Use at EVERY non-streaming success return so no route forgets the telemetry.
  */
-export function attachOmniRouteMetaHeaders(
+export function attachMyRouterMetaHeaders(
   headers: Headers | Record<string, string>,
-  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+  meta: Parameters<typeof buildMyRouterResponseMetaHeaders>[0]
 ): void {
-  const built = buildOmniRouteResponseMetaHeaders(meta);
+  const built = buildMyRouterResponseMetaHeaders(meta);
   if (headers instanceof Headers) {
     for (const [name, value] of Object.entries(built)) headers.set(name, value);
   } else {
@@ -218,21 +218,21 @@ export function attachOmniRouteMetaHeaders(
 }
 
 /**
- * Attach the X-OmniRoute-* meta headers onto an already-built Response, ADDING
+ * Attach the X-MyRouter-* meta headers onto an already-built Response, ADDING
  * (never replacing) headers so the original Content-Type / body stay intact.
  * Tries to mutate in place; if the Response headers are immutable, clones the
  * Response carrying over body + status + headers (mirrors
  * `chatHelpers.ts::withSessionHeader`). Use for opaque handler-built Responses
  * (audio streams, passthrough proxies) where the body cannot be re-serialized.
  */
-export function attachOmniRouteMetaToResponse(
+export function attachMyRouterMetaToResponse(
   response: Response,
-  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+  meta: Parameters<typeof buildMyRouterResponseMetaHeaders>[0]
 ): Response {
   if (!response) return response;
 
   try {
-    attachOmniRouteMetaHeaders(response.headers, meta);
+    attachMyRouterMetaHeaders(response.headers, meta);
     return response;
   } catch {
     const cloned = new Response(response.body, {
@@ -240,7 +240,7 @@ export function attachOmniRouteMetaToResponse(
       statusText: response.statusText,
       headers: response.headers,
     });
-    attachOmniRouteMetaHeaders(cloned.headers, meta);
+    attachMyRouterMetaHeaders(cloned.headers, meta);
     return cloned;
   }
 }

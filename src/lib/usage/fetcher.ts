@@ -5,25 +5,25 @@
 import {
   getGitHubCopilotInternalUserHeaders,
   getKiroServiceHeaders,
-} from "@omniroute/open-sse/config/providerHeaderProfiles.ts";
+} from "@myrouter/open-sse/config/providerHeaderProfiles.ts";
 import {
   applyAntigravityClientProfileHeaders,
   getAntigravityClientProfile,
-} from "@omniroute/open-sse/services/antigravityClientProfile.ts";
-import { getAntigravityContentHeaders } from "@omniroute/open-sse/services/antigravityHeaders.ts";
+} from "@myrouter/open-sse/services/antigravityClientProfile.ts";
+import { getAntigravityContentHeaders } from "@myrouter/open-sse/services/antigravityHeaders.ts";
 import {
   getAntigravityFetchAvailableModelsUrls,
   ANTIGRAVITY_RUNTIME_BASE_URLS,
-} from "@omniroute/open-sse/config/antigravityUpstream.ts";
+} from "@myrouter/open-sse/config/antigravityUpstream.ts";
 import {
   getAntigravityRemainingCredits,
   updateAntigravityRemainingCredits,
-} from "@omniroute/open-sse/executors/antigravity.ts";
-import { getCreditsMode } from "@omniroute/open-sse/services/antigravityCredits.ts";
+} from "@myrouter/open-sse/executors/antigravity.ts";
+import { getCreditsMode } from "@myrouter/open-sse/services/antigravityCredits.ts";
 import {
   generateAntigravityRequestId,
   getAntigravitySessionId,
-} from "@omniroute/open-sse/services/antigravityIdentity.ts";
+} from "@myrouter/open-sse/services/antigravityIdentity.ts";
 
 /**
  * Get usage data for a provider connection
@@ -372,7 +372,7 @@ async function getAntigravityUsage(
 
 /**
  * Claude Usage (legacy fallback)
- * Real Claude OAuth quota windows are fetched in @omniroute/open-sse/services/usage.ts.
+ * Real Claude OAuth quota windows are fetched in @myrouter/open-sse/services/usage.ts.
  */
 async function getClaudeUsage(accessToken?: string) {
   try {

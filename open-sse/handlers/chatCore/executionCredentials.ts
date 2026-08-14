@@ -64,8 +64,8 @@ function applyKimiExecutionMetadata(
   if (provider !== "kimi-coding" && provider !== "kimi-coding-apikey") return;
 
   const staticThinkingPolicy = getKimiCodeStaticThinkingPolicy(modelInfo?.model);
-  providerSpecificData._omnirouteKimiTargetFormat = targetFormat;
-  providerSpecificData._omnirouteKimiThinking = buildKimiThinkingMetadata(
+  providerSpecificData._myrouterKimiTargetFormat = targetFormat;
+  providerSpecificData._myrouterKimiThinking = buildKimiThinkingMetadata(
     modelInfo,
     staticThinkingPolicy
   );
@@ -115,7 +115,7 @@ export function resolveExecutionCredentials(opts: {
     targetFormat === FORMATS.OPENAI_RESPONSES &&
     (provider === "azure-ai" || provider === "oci")
   ) {
-    providerSpecificData._omnirouteForceResponsesUpstream = true;
+    providerSpecificData._myrouterForceResponsesUpstream = true;
   }
 
   // #7364: "zai"/"glm-coding-apikey" default to the Anthropic Messages wire format

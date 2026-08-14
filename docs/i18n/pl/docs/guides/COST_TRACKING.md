@@ -6,7 +6,7 @@ lastUpdated: 2026-06-28
 
 # Śledzenie kosztów i wydatków
 
-Jak OmniRoute szacuje, rejestruje i raportuje koszt każdego żądania — oraz dlaczego
+Jak MyRouter szacuje, rejestruje i raportuje koszt każdego żądania — oraz dlaczego
 liczba na dashboardzie to **tracker oszczędności**, a nie rachunek.
 
 Zobacz też: [Przewodnik użytkownika](./USER_GUIDE.md) · [Galeria funkcji](./FEATURES.md)
@@ -15,11 +15,11 @@ Zobacz też: [Przewodnik użytkownika](./USER_GUIDE.md) · [Galeria funkcji](./F
 
 ## Czym jest (a czym nie jest)
 
-OmniRoute przypisuje koszt w USD do każdego completion, mnożąc liczbę tokenów przez
+MyRouter przypisuje koszt w USD do każdego completion, mnożąc liczbę tokenów przez
 stawki cenowe modelu. Te liczby zasilają dashboard **Costs**, CLI
-`omniroute cost` / `omniroute usage`, eksporty CSV/JSON oraz budżety per klucz API.
+`myrouter cost` / `myrouter usage`, eksporty CSV/JSON oraz budżety per klucz API.
 
-> **„Koszt” na dashboardzie to tracker oszczędności, a nie rachunek.** OmniRoute nigdy
+> **„Koszt” na dashboardzie to tracker oszczędności, a nie rachunek.** MyRouter nigdy
 > Cię nie obciąża — kieruje żądania do providerów, których już podłączyłeś (własne
 > subskrypcje, darmowe tiery i klucze API). „Łączny koszt $290” narosły wyłącznie na
 > darmowych modelach oznacza mniej więcej **$290, których _nie_ zapłaciłeś** płatnemu
@@ -32,7 +32,7 @@ To ujęcie jest wprost w projekcie [README](../../README.md) („the dashboard
 
 Ponieważ liczba jest szacunkiem:
 
-- Zależy od tabeli cen OmniRoute dla każdego modelu. Model bez wpisu cenowego
+- Zależy od tabeli cen MyRouter dla każdego modelu. Model bez wpisu cenowego
   wnosi koszt `0` (w explorerze widać go jako wiersz „Legacy / Free”).
 - Ruch z free-tier i subskrypcji nadal narasta jako _szacowany_ koszt — to kwota,
   którą oszczędzasz, a nie kwota do zapłaty.
@@ -50,7 +50,7 @@ Koszty pochodzą z tabeli cen rozwiązywanej w tej kolejności pierwszeństwa
 2. **Zsynchronizowane ceny zewnętrzne** — pobierane z publicznego pliku LiteLLM
    `model_prices_and_context_window.json`, gdy sync jest włączony (przechowywane w osobnej
    przestrzeni nazw `pricing_synced`, więc nigdy nie nadpisują Twoich override’ów).
-3. **Zakodowane na stałe domyślne** — dostarczane z OmniRoute.
+3. **Zakodowane na stałe domyślne** — dostarczane z MyRouter.
 
 Zewnętrzny sync cen jest **opt-in**, domyślnie wyłączony. Istotne zmienne środowiskowe
 (zob. [`.env.example`](../../.env.example)):
@@ -93,8 +93,8 @@ pasują do ceny.
 
   | Env var                             | Default | Cel                                             |
   | ----------------------------------- | ------- | ----------------------------------------------- |
-  | `OMNIROUTE_SPEND_FLUSH_INTERVAL_MS` | `60000` | Interwał flush w milisekundach.                 |
-  | `OMNIROUTE_SPEND_MAX_BUFFER_SIZE`   | `1000`  | Maks. liczba buforowanych wpisów przed flushem. |
+  | `MYROUTER_SPEND_FLUSH_INTERVAL_MS` | `60000` | Interwał flush w milisekundach.                 |
+  | `MYROUTER_SPEND_MAX_BUFFER_SIZE`   | `1000`  | Maks. liczba buforowanych wpisów przed flushem. |
 
 Liczby kosztów na dashboardzie **nie** pochodzą z zapisanej kwoty dolarowej per wiersz —
 są przeliczane w locie z liczby tokenów i bieżącej tabeli cen przy każdym wywołaniu
@@ -199,50 +199,50 @@ nie zaznaczono inaczej.
 
 ## CLI
 
-CLI OmniRoute udostępnia komendy cost, usage i pricing (zarejestrowane w
+CLI MyRouter udostępnia komendy cost, usage i pricing (zarejestrowane w
 [`bin/cli/commands/registry.mjs`](../../bin/cli/commands/registry.mjs)).
 
-### `omniroute cost`
+### `myrouter cost`
 
 Raport kosztów agregowany z `/api/usage/analytics`.
 
 ```bash
-omniroute cost                          # last 30d, grouped by provider
-omniroute cost --period 7d              # last 7 days
-omniroute cost --group-by model         # group by provider | model | combo | api-key | day
-omniroute cost --since 2026-06-01 --until 2026-06-13
-omniroute cost --api-key <key> --limit 50
+myrouter cost                          # last 30d, grouped by provider
+myrouter cost --period 7d              # last 7 days
+myrouter cost --group-by model         # group by provider | model | combo | api-key | day
+myrouter cost --since 2026-06-01 --until 2026-06-13
+myrouter cost --api-key <key> --limit 50
 ```
 
 Kolumny: group, requests, tokens in/out, cost (USD) oraz % of total. Na końcu drukowana
 jest linia grand total (tłumiona przez `--quiet` lub `--output json`).
 
-### `omniroute usage`
+### `myrouter usage`
 
 ```bash
-omniroute usage analytics --period 30d [--provider <id>]   # per-provider cost summary
-omniroute usage logs [--limit 100] [--follow] [--api-key <k>] [--search <q>]
-omniroute usage quota [--provider <id>] [--check]
-omniroute usage utilization [--api-key <k>]
-omniroute usage history [--limit 100]
-omniroute usage proxy-logs [--limit 100]
+myrouter usage analytics --period 30d [--provider <id>]   # per-provider cost summary
+myrouter usage logs [--limit 100] [--follow] [--api-key <k>] [--search <q>]
+myrouter usage quota [--provider <id>] [--check]
+myrouter usage utilization [--api-key <k>]
+myrouter usage history [--limit 100]
+myrouter usage proxy-logs [--limit 100]
 
 # Budgets
-omniroute usage budget list
-omniroute usage budget get [scope]
-omniroute usage budget set <amount> [--scope global] [--period monthly]
-omniroute usage budget reset [scope]
+myrouter usage budget list
+myrouter usage budget get [scope]
+myrouter usage budget set <amount> [--scope global] [--period monthly]
+myrouter usage budget reset [scope]
 ```
 
-### `omniroute pricing`
+### `myrouter pricing`
 
 ```bash
-omniroute pricing list [--provider <p>] [--model <m>] [--limit 200]
-omniroute pricing get <model>
-omniroute pricing sync [--provider <p>] [--force]   # POST /api/pricing/sync
-omniroute pricing diff [--model <m>]
-omniroute pricing defaults show
-omniroute pricing defaults set [--input <p>] [--output <p>] [--cache-read <p>] [--cache-write <p>]
+myrouter pricing list [--provider <p>] [--model <m>] [--limit 200]
+myrouter pricing get <model>
+myrouter pricing sync [--provider <p>] [--force]   # POST /api/pricing/sync
+myrouter pricing diff [--model <m>]
+myrouter pricing defaults show
+myrouter pricing defaults set [--input <p>] [--output <p>] [--cache-read <p>] [--cache-write <p>]
 ```
 
 > `pricing defaults show` czyta `GET /api/pricing/defaults`. Aby edytować ceny
@@ -254,13 +254,13 @@ omniroute pricing defaults set [--input <p>] [--output <p>] [--cache-read <p>] [
 
 - **Wszystkie koszty pokazują $0 / „Legacy / Free”.** Używane modele nie mają wpisu
   cenowego. Włącz zewnętrzny sync (`PRICING_SYNC_ENABLED=true`) i uruchom
-  `omniroute pricing sync`, albo ustaw ceny ręcznie na stronie Pricing / przez
+  `myrouter pricing sync`, albo ustaw ceny ręcznie na stronie Pricing / przez
   `PATCH /api/pricing`.
 - **Historyczny model ma złą cenę.** Popraw cenę (override lub re-sync) — koszt jest
   przeliczany z liczby tokenów przy każdym odczycie analytics, więc szacunki aktualizują
   się z mocą wsteczną.
 - **Wydatki opóźniają się względem czasu rzeczywistego.** Spend per klucz jest batchowany;
-  obniż `OMNIROUTE_SPEND_FLUSH_INTERVAL_MS`, jeśli potrzebujesz świeższych liczb.
+  obniż `MYROUTER_SPEND_FLUSH_INTERVAL_MS`, jeśli potrzebujesz świeższych liczb.
 
 ---
 

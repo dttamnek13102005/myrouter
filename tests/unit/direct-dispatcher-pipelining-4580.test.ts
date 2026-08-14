@@ -52,16 +52,16 @@ describe("#4580 direct dispatcher options", () => {
     assert.equal(typeof direct.connect?.autoSelectFamilyAttemptTimeout, "number");
   });
 
-  it("connection limit honors OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS", () => {
+  it("connection limit honors MYROUTER_DIRECT_DISPATCHER_CONNECTIONS", () => {
     assert.equal(
-      getDefaultDispatcherConnectionLimit({ OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS: "8" }),
+      getDefaultDispatcherConnectionLimit({ MYROUTER_DIRECT_DISPATCHER_CONNECTIONS: "8" }),
       8
     );
   });
 
   it("connection limit clamps invalid values to the default", () => {
     assert.equal(
-      getDefaultDispatcherConnectionLimit({ OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS: "nonsense" }),
+      getDefaultDispatcherConnectionLimit({ MYROUTER_DIRECT_DISPATCHER_CONNECTIONS: "nonsense" }),
       32
     );
     assert.equal(getDefaultDispatcherConnectionLimit({}), 32);

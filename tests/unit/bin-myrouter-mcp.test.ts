@@ -4,14 +4,14 @@ import { pathToFileURL } from "node:url";
 import { join } from "node:path";
 import { platform } from "node:os";
 
-describe("bin/omniroute.mjs MCP path handling", () => {
+describe("bin/myrouter.mjs MCP path handling", () => {
   it("pathToFileURL converts Windows paths to valid file:// URLs", () => {
     if (platform() !== "win32") {
       // Skip on non-Windows platforms
       return;
     }
 
-    const testPath = "C:\\Users\\test\\projects\\OmniRoute\\bin\\mcp-server.mjs";
+    const testPath = "C:\\Users\\test\\projects\\MyRouter\\bin\\mcp-server.mjs";
     const fileUrl = pathToFileURL(testPath);
 
     assert.ok(fileUrl.href.startsWith("file:///"), "URL should start with file:///");
@@ -26,7 +26,7 @@ describe("bin/omniroute.mjs MCP path handling", () => {
       return;
     }
 
-    const testPath = "/home/user/projects/OmniRoute/bin/mcp-server.mjs";
+    const testPath = "/home/user/projects/MyRouter/bin/mcp-server.mjs";
     const fileUrl = pathToFileURL(testPath);
 
     assert.ok(fileUrl.href.startsWith("file:///"), "URL should start with file:///");
